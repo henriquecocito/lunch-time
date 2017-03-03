@@ -1,0 +1,11 @@
+<PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Account">
+
+        <Preference
+            android:title="Logout"
+            android:key="logout">
+        </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

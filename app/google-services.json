@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "983666146882",
+    "firebase_url": "https://lunchtime-daf81.firebaseio.com",
+    "project_id": "lunchtime-daf81",
+    "storage_bucket": "lunchtime-daf81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983666146882:android:f5e76dc59d93a672",
+        "android_client_info": {
+          "package_name": "br.com.henriquecocito.lunchtime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "983666146882-9gv3t7i8un8qfjjhm2vklbkqkqg42a56.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.henriquecocito.lunchtime",
+            "certificate_hash": "4a148e7d0e43238b9503f43e7e86bc810436a302"
+          }
+        },
+        {
+          "client_id": "983666146882-ag5ic004jq97p0cg3quga7u7tlqrcgkn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIC8OBYVhKuNwirGREfzHm57qEROr3rRM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "983666146882-ag5ic004jq97p0cg3quga7u7tlqrcgkn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
