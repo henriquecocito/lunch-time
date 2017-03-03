@@ -38,7 +38,9 @@ dependencies {
     // Google Sign In SDK (only required for Google Sign In)
     compile 'com.google.android.gms:play-services-auth:10.0.1'
 
-    // Picasso
+    // Square
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     // Circle ImageView
@@ -55,7 +57,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
 }
-
-
 
 apply plugin: 'com.google.gms.google-services'

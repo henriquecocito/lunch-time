@@ -1,11 +1,24 @@
 <PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
+
     <PreferenceCategory
-        android:title="Account">
+        android:title="@string/pref_title_map">
+
+        <EditTextPreference
+            android:title="@string/pref_title_radius"
+            android:key="@string/pref_key_radius"
+            android:defaultValue="200"/>
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        android:title="@string/pref_title_account">
 
         <Preference
-            android:title="Logout"
-            android:key="logout">
+            android:title="@string/pref_title_logout"
+            android:key="@string/pref_key_logout">
         </Preference>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

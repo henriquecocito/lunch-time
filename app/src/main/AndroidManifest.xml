@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBquQHgrNtqJduLGCpawhfCFcga98bwtfg"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/apiKey"/>
 
         <activity
             android:name=".view.activities.LoginActivity"
