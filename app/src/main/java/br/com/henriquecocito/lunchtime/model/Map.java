@@ -2,6 +2,7 @@ package br.com.henriquecocito.lunchtime.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,11 @@ import java.util.List;
  * Created by HenriqueCocito on 03/03/17.
  */
 
-public class Result {
+public class Map {
 
     @SerializedName("geometry")
     @Expose
-    private Geometry geometry;
+    private LinkedTreeMap<String, Object> geometry = new LinkedTreeMap<>();
     @SerializedName("icon")
     @Expose
     private String icon;
@@ -46,12 +47,7 @@ public class Result {
     @Expose
     private Integer priceLevel;
 
-    /**
-     *
-     * @return
-     * The geometry
-     */
-    public Geometry getGeometry() {
+    public LinkedTreeMap<String, Object> getGeometry() {
         return geometry;
     }
 
@@ -60,7 +56,7 @@ public class Result {
      * @param geometry
      * The geometry
      */
-    public void setGeometry(Geometry geometry) {
+    public void setGeometry(LinkedTreeMap<String, Object> geometry) {
         this.geometry = geometry;
     }
 

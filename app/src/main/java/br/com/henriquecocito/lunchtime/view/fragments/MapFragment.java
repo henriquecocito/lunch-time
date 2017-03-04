@@ -2,16 +2,14 @@ package br.com.henriquecocito.lunchtime.view.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,31 +17,73 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.internal.LinkedTreeMap;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 
-import br.com.henriquecocito.lunchtime.R;
-import br.com.henriquecocito.lunchtime.model.Places;
-import br.com.henriquecocito.lunchtime.model.Result;
-import br.com.henriquecocito.lunchtime.utils.APIClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import br.com.henriquecocito.lunchtime.model.Map;
+import br.com.henriquecocito.lunchtime.view.activities.PlaceDetailActivity;
+import br.com.henriquecocito.lunchtime.viewmodel.MapViewModel;
 
 /**
  * Created by HenriqueCocito on 02/03/17.
  */
 
-public class MapFragment extends SupportMapFragment {
+public class MapFragment extends SupportMapFragment implements MapViewModel.MapDataListener {
 
     public final static int REQUEST_PERMISSIONS = 2;
+
+    private MapViewModel mMapViewModel;
+    private GoogleMap mGoogleMap;
+    private Location mLocation;
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+
+        mMapViewModel = new MapViewModel();
+        mMapViewModel.setDataListener(this);
+
+        mLocation = getLastKnownLocation();
+
         setupGoogleMaps();
+    }
+
+    @Override
+    public void onMapChanged(ArrayList<Map> maps) {
+        for(Map map : maps) {
+            pinMap(map);
+        }
+    }
+
+    @Override
+    public void onMapError(Throwable error) {
+        Snackbar.make(getView(), error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onMapLoaded(final ArrayList<Map> maps) {
+
+        // Zoom camera
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()), 17));
+
+        // Set click on place information
+        mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                for (Map result : maps) {
+                    if(result.getId() == marker.getTag()) {
+                        Intent intent = new Intent(getActivity(), PlaceDetailActivity.class);
+                        intent.putExtra("placeid", result.getPlaceId());
+                        intent.putExtra("reference", result.getReference());
+                        getActivity().startActivity(intent);
+                        break;
+                    }
+                }
+            }
+        });
     }
 
     public void setupGoogleMaps() {
@@ -52,6 +92,9 @@ public class MapFragment extends SupportMapFragment {
 
             @Override
             public void onMapReady(final GoogleMap googleMap) {
+
+                mGoogleMap = googleMap;
+                mGoogleMap.clear();
 
                 // Request Permission
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -64,64 +107,20 @@ public class MapFragment extends SupportMapFragment {
                     );
                     return;
                 }
-                getNearbyPlaces(googleMap);
-                googleMap.setMyLocationEnabled(true);
+                mGoogleMap.setMyLocationEnabled(true);
+
+                if(mLocation != null) {
+                    mMapViewModel.getNearbyPlaces(mLocation);
+                } else {
+                    Snackbar.make(getView(), "Can't get current position", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }
 
-    private void getNearbyPlaces(final GoogleMap googleMap) {
+    private void pinMap(Map map) {
 
-        Location location = getLastKnownLocation();
-
-        if (location != null) {
-
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 17));
-
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-            HashMap<String, String> params = new HashMap<>();
-            params.put("key", getString(R.string.apiKey));
-            params.put("sensor", "true");
-            params.put("radius", sharedPreferences.getString(getString(R.string.pref_key_radius), "200"));
-            params.put("types", "restaurant");
-            params.put("location", String.format("%s,%s", location.getLatitude(), location.getLongitude()));
-
-            APIClient.getInstance().getPlaces(params).enqueue(new Callback<Places>() {
-
-                @Override
-                public void onResponse(Call<Places> call, Response<Places> response) {
-                    try {
-
-                        googleMap.clear();
-
-                        for (int i = 0; i < response.body().getResults().size(); i++) {
-
-                            Result result = response.body().getResults().get(i);
-
-                            Double lat = result.getGeometry().getLocation().getLat();
-                            Double lng = result.getGeometry().getLocation().getLng();
-
-                            pinMap(new LatLng(lat, lng), result.getName(), googleMap);
-                        }
-                    } catch (Exception e) {
-                        Log.d("onResponse", "There is an error");
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Places> call, Throwable t) {
-                    Snackbar.make(getView(), "Can't get nearby restaurants", Snackbar.LENGTH_LONG).show();
-                }
-            });
-        } else {
-            Snackbar.make(getView(), "Can't get current position", Snackbar.LENGTH_LONG).show();
-        }
-    }
-
-    private void pinMap(LatLng latLng, String name, GoogleMap googleMap) {
-
+        // Check permissions
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -133,17 +132,24 @@ public class MapFragment extends SupportMapFragment {
             return;
         }
 
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title(name);
+        // Get coordinates
+        LinkedTreeMap<String, Double> coordinates = (LinkedTreeMap<String, Double>) map.getGeometry().get("location");
+
+        // Create pin
+        final MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(new LatLng(coordinates.get("lat"), coordinates.get("lng")));
+        markerOptions.title(map.getName());
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
-        googleMap.addMarker(markerOptions);
+        // Pin it on map
+        Marker marker = mGoogleMap.addMarker(markerOptions);
+        marker.setTag(map.getId());
     }
 
-
+    @Nullable
     private Location getLastKnownLocation() {
 
+        // Check permissions
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
          && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -155,10 +161,12 @@ public class MapFragment extends SupportMapFragment {
             return null;
         }
 
+        // Get list of location providers
         LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         Location bestLocation = null;
-        for (String provider : locationManager.getProviders(true)) {
 
+        // Get the best location provided
+        for (String provider : locationManager.getProviders(true)) {
             Location location = locationManager.getLastKnownLocation(provider);
             if (location == null) {
                 continue;

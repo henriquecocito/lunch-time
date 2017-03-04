@@ -2,7 +2,8 @@
     <string name="app_name">Lunch Time</string>
 
     <!-- Manifest -->
-    <string name="apiKey">AIzaSyBquQHgrNtqJduLGCpawhfCFcga98bwtfg</string>
+    <string name="googleApiKey">AIzaSyBquQHgrNtqJduLGCpawhfCFcga98bwtfg</string>
+    <string name="fabricApiKey">38d3b5bf23173e28a1313575b4043a956f5e5cd3</string>
 
     <!-- Navigation -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -24,4 +25,5 @@
     <string name="pref_title_account">Account</string>
     <string name="pref_title_logout">Logout</string>
     <string name="pref_key_logout">logout</string>
+    <string name="action_detail">Detail</string>
 </resources>

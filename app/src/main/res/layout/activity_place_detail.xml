@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View"/>
+
+        <variable
+            name="place"
+            type="br.com.henriquecocito.lunchtime.viewmodel.PlaceViewModel"/>
+
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            app:imageUrl="@{place.getPhoto()}"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/image_bottom">
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/description"
+                android:layout_marginBottom="@dimen/image_bottom"
+                android:text="@{place.getAddress()}"/>
+
+            <TextView
+                android:id="@+id/phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{place.getPhone() != null ? View.VISIBLE: View.GONE}"
+                android:text="@{`Phone: ` + place.getPhone()}"/>
+
+            <TextView
+                android:id="@+id/website"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{place.getWebsite() != null ? View.VISIBLE: View.GONE}"
+                android:text="@{`Website: ` + place.getWebsite()}"/>
+        </LinearLayout>
+    </LinearLayout>
+</layout>
