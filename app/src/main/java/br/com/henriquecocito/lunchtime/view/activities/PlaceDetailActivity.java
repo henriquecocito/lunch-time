@@ -17,15 +17,17 @@ import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.databinding.ActivityPlaceDetailBinding;
 import br.com.henriquecocito.lunchtime.model.Place;
 import br.com.henriquecocito.lunchtime.viewmodel.PlaceViewModel;
+import br.com.henriquecocito.lunchtime.viewmodel.VoteViewModel;
 
 /**
  * Created by HenriqueCocito on 03/03/17.
  */
 
-public class PlaceDetailActivity extends AppCompatActivity implements PlaceViewModel.PlaceDataListener {
+public class PlaceDetailActivity extends AppCompatActivity implements PlaceViewModel.PlaceDataListener, VoteViewModel.VoteDataListener {
 
     ActivityPlaceDetailBinding mView;
     PlaceViewModel mPlaceViewModel;
+    VoteViewModel mVoteViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,9 @@ public class PlaceDetailActivity extends AppCompatActivity implements PlaceViewM
         mPlaceViewModel = new PlaceViewModel();
         mPlaceViewModel.setDataListener(this);
         mPlaceViewModel.loadPlaces(getIntent().getExtras().getString("placeid"));
+
+        mVoteViewModel = new VoteViewModel();
+        mVoteViewModel.setDataListener(this);
     }
 
     @Override
@@ -54,7 +59,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements PlaceViewM
                 finish();
                 break;
             case R.id.nav_vote:
-                mPlaceViewModel.vote();
+                mVoteViewModel.vote(mPlaceViewModel.getPlaceId());
                 break;
             default:
                 break;

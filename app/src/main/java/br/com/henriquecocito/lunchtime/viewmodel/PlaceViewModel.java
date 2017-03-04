@@ -41,8 +41,6 @@ public class PlaceViewModel extends BaseObservable {
         void onPlaceChanged(Place place);
         void onPlaceError(Throwable error);
         void onPlaceLoaded();
-        void onVoteChanged();
-        void onVoteError(Throwable error);
     }
 
     public void setDataListener(PlaceDataListener dataListener){
@@ -51,6 +49,11 @@ public class PlaceViewModel extends BaseObservable {
 
     public void setPlace(Place place) {
         this.mPlace = place;
+    }
+
+    // Fields to Data Binding
+    public String getPlaceId() {
+        return mPlace.getPlaceId();
     }
 
     public String getAddress() {
@@ -81,33 +84,7 @@ public class PlaceViewModel extends BaseObservable {
         return null;
     }
 
-    public void vote() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference collection = database.getReference("votes");
-
-        Vote vote = new Vote();
-        vote.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        vote.setPlaceId(mPlace.getPlaceId());
-        vote.setCreated(new Date());
-
-        collection
-                .child(String.format("%s-%s", mPlace.getPlaceId(), FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                .setValue(vote)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        mDataListener.onVoteChanged();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        mDataListener.onVoteError(e);
-                    }
-                });
-
-    }
-
+    // API method
     public void loadPlaces(String placeId) {
 
         HashMap<String, String> params = new HashMap<>();
