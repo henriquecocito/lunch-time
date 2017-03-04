@@ -1,16 +1,26 @@
 package br.com.henriquecocito.lunchtime.viewmodel;
 
 import android.databinding.BaseObservable;
+import android.support.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.model.Place;
+import br.com.henriquecocito.lunchtime.model.Vote;
 import br.com.henriquecocito.lunchtime.utils.APIClient;
 import rx.Observable;
 import rx.Subscriber;
@@ -31,6 +41,8 @@ public class PlaceViewModel extends BaseObservable {
         void onPlaceChanged(Place place);
         void onPlaceError(Throwable error);
         void onPlaceLoaded();
+        void onVoteChanged();
+        void onVoteError(Throwable error);
     }
 
     public void setDataListener(PlaceDataListener dataListener){
@@ -67,6 +79,33 @@ public class PlaceViewModel extends BaseObservable {
             return sb.toString();
         }
         return null;
+    }
+
+    public void vote() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference collection = database.getReference("votes");
+
+        Vote vote = new Vote();
+        vote.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        vote.setPlaceId(mPlace.getPlaceId());
+        vote.setCreated(new Date());
+
+        collection
+                .child(String.format("%s-%s", mPlace.getPlaceId(), FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                .setValue(vote)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        mDataListener.onVoteChanged();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        mDataListener.onVoteError(e);
+                    }
+                });
+
     }
 
     public void loadPlaces(String placeId) {

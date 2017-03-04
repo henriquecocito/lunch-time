@@ -34,10 +34,12 @@
 
         <activity
             android:name=".view.activities.PlaceDetailActivity"
+            android:theme="@style/AppTheme"
             android:label="@string/action_detail"></activity>
 
         <activity
             android:name=".view.activities.SettingsActivity"
+            android:theme="@style/AppTheme"
             android:label="@string/action_settings"></activity>
 
 
