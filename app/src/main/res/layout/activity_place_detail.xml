@@ -10,47 +10,78 @@
             name="place"
             type="br.com.henriquecocito.lunchtime.viewmodel.PlaceViewModel"/>
 
+
+        <variable
+            name="vote"
+            type="br.com.henriquecocito.lunchtime.viewmodel.VoteViewModel"/>
+
     </data>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            app:imageUrl="@{place.getPhoto()}"
-            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/image_bottom">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/description"
-                android:layout_marginBottom="@dimen/image_bottom"
-                android:text="@{place.getAddress()}"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="@{place.getPhone() != null ? View.VISIBLE: View.GONE}"
-                android:text="@{`Phone: ` + place.getPhone()}"/>
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:src="@drawable/placeholder"
+                    app:photoUrl="@{place.getPhoto()}"
+                    android:scaleType="centerCrop" />
 
-            <TextView
-                android:id="@+id/website"
+                <TextView
+                    android:id="@+id/votes"
+                    android:background="@drawable/circle"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:textSize="20sp"
+                    android:textAlignment="center"
+                    android:paddingTop="15dp"
+                    android:textColor="@android:color/black"
+                    android:text="@{vote.getVotes()}"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="20dp"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="@{place.getWebsite() != null ? View.VISIBLE: View.GONE}"
-                android:text="@{`Website: ` + place.getWebsite()}"/>
+                android:layout_height="match_parent"
+                android:padding="@dimen/image_bottom">
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/description"
+                    android:layout_marginBottom="@dimen/image_bottom"
+                    android:text="@{place.getAddress()}"/>
+
+                <TextView
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{place.getPhone() != null ? View.VISIBLE: View.GONE}"
+                    android:text="@{`Phone: ` + place.getPhone()}"/>
+
+                <TextView
+                    android:id="@+id/website"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{place.getWebsite() != null ? View.VISIBLE: View.GONE}"
+                    android:text="@{`Website: ` + place.getWebsite()}"/>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </layout>

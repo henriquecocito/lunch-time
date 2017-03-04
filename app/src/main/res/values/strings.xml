@@ -10,7 +10,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_map">Find Restaurants</string>
-    <string name="action_restaurant">Restaurants</string>
+    <string name="action_restaurant">Ranking</string>
     <string name="action_settings">Settings</string>
 
     <!--Errors -->

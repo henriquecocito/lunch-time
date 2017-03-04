@@ -6,12 +6,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import br.com.henriquecocito.lunchtime.model.Vote;
+import rx.Observable;
 
 /**
  * Created by HenriqueCocito on 04/03/17.
@@ -19,33 +24,52 @@ import br.com.henriquecocito.lunchtime.model.Vote;
 
 public class VoteViewModel {
 
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mCollection;
+
+    private long mVotes = 0;
+
     private VoteDataListener mDataListener;
 
     public interface VoteDataListener {
-        void onVoteChanged();
+        void onVoteChanged(HashMap<String, Object> object);
         void onVoteError(Throwable error);
+        void onVoteCompleted();
     }
 
     public void setDataListener(VoteDataListener dataListener) {
         this.mDataListener = dataListener;
     }
 
+    public VoteViewModel() {
+        mDatabase = FirebaseDatabase.getInstance();
+        mCollection = mDatabase.getReference("votes");
+    }
+
+    public void setVotes(long votes) {
+        this.mVotes = votes;
+    }
+
+    public String getVotes() {
+        return String.valueOf(this.mVotes);
+    }
+
     public void vote(String placeId) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference collection = database.getReference("votes");
 
         Vote vote = new Vote();
         vote.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
         vote.setPlaceId(placeId);
         vote.setCreated(new Date());
 
-        collection
-                .child(String.format("%s-%s", placeId, FirebaseAuth.getInstance().getCurrentUser().getUid()))
+        mCollection
+                .child(vote.getCreated())
+                .child(placeId)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(vote)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        mDataListener.onVoteChanged();
+                        mDataListener.onVoteCompleted();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -55,5 +79,23 @@ public class VoteViewModel {
                     }
                 });
 
+    }
+
+    public void loadVotes(String date, String placeId) {
+
+        mCollection
+                .child(date)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        mVotes = dataSnapshotgetChildrenCount();
+                        mDataListener.onVoteChanged((HashMap<String, Object>) dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        mDataListener.onVoteError(new Throwable(databaseError.getMessage()));
+                    }
+                });
     }
 }

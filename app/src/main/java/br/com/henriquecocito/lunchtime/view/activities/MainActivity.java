@@ -67,10 +67,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
-
+            case R.id.nav_restaurants:
+                intent = new Intent(MainActivity.this, RankingActivity.class);
+                startActivity(intent);
             case R.id.nav_settings:
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 break;
             default:

@@ -85,7 +85,7 @@ public class PlaceViewModel extends BaseObservable {
     }
 
     // API method
-    public void loadPlaces(String placeId) {
+    public void loadDetail(String placeId) {
 
         HashMap<String, String> params = new HashMap<>();
         params.put("key", LunchTimeApplication.CONTEXT.getString(R.string.googleApiKey));

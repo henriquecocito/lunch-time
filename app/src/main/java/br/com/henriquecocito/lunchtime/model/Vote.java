@@ -40,7 +40,7 @@ public class Vote {
     }
 
     public void setCreated(Date created) {
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
         this.mCreated = df.format(created);
     }
 }

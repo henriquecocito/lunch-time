@@ -24,7 +24,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import java.util.ArrayList;
 
 import br.com.henriquecocito.lunchtime.model.Map;
-import br.com.henriquecocito.lunchtime.view.activities.PlaceDetailActivity;
+import br.com.henriquecocito.lunchtime.view.activities.DetailActivity;
 import br.com.henriquecocito.lunchtime.viewmodel.MapViewModel;
 
 /**
@@ -75,7 +75,7 @@ public class MapFragment extends SupportMapFragment implements MapViewModel.MapD
             public void onInfoWindowClick(Marker marker) {
                 for (Map result : maps) {
                     if(result.getId() == marker.getTag()) {
-                        Intent intent = new Intent(getActivity(), PlaceDetailActivity.class);
+                        Intent intent = new Intent(getActivity(), DetailActivity.class);
                         intent.putExtra("placeid", result.getPlaceId());
                         intent.putExtra("reference", result.getReference());
                         getActivity().startActivity(intent);
