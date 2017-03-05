@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_restaurants:
                 intent = new Intent(MainActivity.this, RankingActivity.class);
                 startActivity(intent);
+                break;
             case R.id.nav_settings:
                 intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);

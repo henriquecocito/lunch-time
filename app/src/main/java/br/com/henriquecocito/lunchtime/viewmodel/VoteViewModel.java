@@ -1,5 +1,6 @@
 package br.com.henriquecocito.lunchtime.viewmodel;
 
+import android.databinding.BaseObservable;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,13 +17,12 @@ import java.util.Date;
 import java.util.HashMap;
 
 import br.com.henriquecocito.lunchtime.model.Vote;
-import rx.Observable;
 
 /**
  * Created by HenriqueCocito on 04/03/17.
  */
 
-public class VoteViewModel {
+public class VoteViewModel extends BaseObservable{
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mCollection;
@@ -54,11 +54,12 @@ public class VoteViewModel {
         return String.valueOf(this.mVotes);
     }
 
-    public void vote(String placeId) {
+    public void vote(String placeId, String placeName) {
 
         Vote vote = new Vote();
         vote.setUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
         vote.setPlaceId(placeId);
+        vote.setPlaceName(placeName);
         vote.setCreated(new Date());
 
         mCollection
@@ -81,14 +82,13 @@ public class VoteViewModel {
 
     }
 
-    public void loadVotes(String date, String placeId) {
+    public void loadVotes(String date) {
 
         mCollection
                 .child(date)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-//                        mVotes = dataSnapshotgetChildrenCount();
                         mDataListener.onVoteChanged((HashMap<String, Object>) dataSnapshot.getValue());
                     }
 

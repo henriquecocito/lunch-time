@@ -17,6 +17,7 @@ public class Vote {
 
     private String mUserId;
     private String mPlaceId;
+    private String mPlaceName;
     private String mCreated;
 
     public String getUserId() {
@@ -29,6 +30,14 @@ public class Vote {
 
     public String getPlaceId() {
         return mPlaceId;
+    }
+
+    public String getPlaceName() {
+        return mPlaceName;
+    }
+
+    public void setPlaceName(String placeName) {
+        this.mPlaceName = placeName;
     }
 
     public void setPlaceId(String placeId) {

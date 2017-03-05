@@ -73,7 +73,7 @@ public class DetailActivity extends AppCompatActivity implements PlaceViewModel.
                 finish();
                 break;
             case R.id.nav_vote:
-                mVoteViewModel.vote(mPlaceViewModel.getPlaceId());
+                mVoteViewModel.vote(mPlaceViewModel.getPlaceId(), mPlaceViewModel.getName());
                 break;
             default:
                 break;
@@ -96,7 +96,7 @@ public class DetailActivity extends AppCompatActivity implements PlaceViewModel.
     @Override
     public void onPlaceLoaded() {
         DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
-        mVoteViewModel.loadVotes(df.format(new Date()), mPlaceViewModel.getPlaceId());
+        mVoteViewModel.loadVotes(df.format(new Date()));
         mView.setPlace(mPlaceViewModel);
 
         getSupportActionBar().setTitle(mPlaceViewModel.getName());
