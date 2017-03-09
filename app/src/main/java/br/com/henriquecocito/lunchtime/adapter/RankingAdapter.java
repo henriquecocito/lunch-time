@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.databinding.ItemRankingBinding;
-import br.com.henriquecocito.lunchtime.model.Place;
 import br.com.henriquecocito.lunchtime.model.Vote;
 import br.com.henriquecocito.lunchtime.viewmodel.ItemRankingViewModel;
 

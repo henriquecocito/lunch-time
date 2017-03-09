@@ -25,69 +25,38 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.databinding.ActivityLoginBinding;
+import br.com.henriquecocito.lunchtime.viewmodel.LoginViewModel;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
-
-    private static final int RC_SIGN_IN = 1;
+public class LoginActivity extends AppCompatActivity implements LoginViewModel.LoginListener{
 
     private ActivityLoginBinding mView;
-    private GoogleApiClient mGoogleApiClient;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    private LoginViewModel mLoginViewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mLoginViewModel = new LoginViewModel(this, this);
+
         mView = DataBindingUtil.setContentView(this, R.layout.activity_login);
-
-        mView.signInButton.setOnClickListener(this);
-
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    showLoading();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                }
-            }
-        };
-
+        mView.setLoginViewModel(mLoginViewModel);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == LoginViewModel.LOGIN_GOOGLE) {
 
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
             if (result.isSuccess()) {
-                GoogleSignInAccount account = result.getSignInAccount();
-                firebaseAuthWithGoogle(account);
-            } else {
-                Snackbar.make(mView.rootView, R.string.error_authentication, Snackbar.LENGTH_LONG).show();
 
-                hideLoading();
+                GoogleSignInAccount account = result.getSignInAccount();
+                AuthCredential token = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                mLoginViewModel.firebaseAuthWithCredential(token);
+            } else {
+                onLoginError(new Throwable(getString(R.string.error_authentication)));
             }
         }
     }
@@ -95,66 +64,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        mLoginViewModel.setAuthListener();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
+        mLoginViewModel.removeAuthListener();
     }
 
     @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-
-                showLoading();
-
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-                break;
-            default:
-                break;
-        }
+    public void onLogin(Object object) {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent((GoogleApiClient) object);
+        startActivityForResult(signInIntent, LoginViewModel.LOGIN_GOOGLE);
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Snackbar.make(mView.rootView, R.string.error_google_play_services, Snackbar.LENGTH_LONG).show();
-
-        hideLoading();
+    public void onLoginSuccess(FirebaseUser user) {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-
-        // Get Token from Account
-        AuthCredential token = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-
-        // Firebase sign in with credential
-        mAuth.signInWithCredential(token).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                if(!task.isSuccessful()) {
-                    Snackbar.make(mView.rootView, R.string.error_authentication, Snackbar.LENGTH_LONG).show();
-                    hideLoading();
-                }
-            }
-        });
-    }
-
-    private void showLoading() {
-        mView.loading.setVisibility(View.VISIBLE);
-        mView.signInButton.setVisibility(View.GONE);
-    }
-
-    private void hideLoading() {
-        mView.loading.setVisibility(View.GONE);
-        mView.signInButton.setVisibility(View.VISIBLE);
+    @Override
+    public void onLoginError(Throwable error) {
+        Snackbar.make(mView.rootView, error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
     }
 }

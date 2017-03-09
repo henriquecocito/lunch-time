@@ -58,14 +58,14 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/image_bottom">
+                android:padding="@dimen/margin_bottom">
 
                 <TextView
                     android:id="@+id/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/description"
-                    android:layout_marginBottom="@dimen/image_bottom"
+                    android:layout_marginBottom="@dimen/margin_bottom"
                     android:text="@{place.getAddress()}"/>
 
                 <TextView
