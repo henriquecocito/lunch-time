@@ -37,8 +37,6 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
     private FragmentActivity mActivity;
     private LoginListener mDataListener;
 
-
-
     public interface LoginListener {
         void onLogin(Object object);
         void onLoginSuccess(FirebaseUser user);
@@ -155,11 +153,12 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
     }
 
     public void signInEmail(View v) {
-
-        setLoading(true);
         setEmail(true);
 
         if(mUsername != null && mPassword != null) {
+
+            setLoading(true);
+
             FirebaseAuth
                     .getInstance()
                     .signInWithEmailAndPassword(mUsername, mPassword)
@@ -168,5 +167,10 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
 
             mDataListener.onLogin(null);
         }
+    }
+
+    public void resetLogin(View v) {
+        setEmail(false);
+        setLoading(false);
     }
 }

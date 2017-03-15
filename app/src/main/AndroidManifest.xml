@@ -18,13 +18,19 @@
         <meta-data android:name="io.fabric.ApiKey" android:value="38d3b5bf23173e28a1313575b4043a956f5e5cd3" />
 
         <activity
+            android:name=".view.activities.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+
+        <activity
             android:name=".view.activities.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity

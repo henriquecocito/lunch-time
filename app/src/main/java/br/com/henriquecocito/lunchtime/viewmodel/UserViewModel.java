@@ -16,6 +16,10 @@ public class UserViewModel extends BaseObservable {
 
     private FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
+    public static boolean isLoggedIn() {
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
+
     public String getName() {
         return mUser.getDisplayName();
     }

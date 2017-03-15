@@ -24,31 +24,34 @@
             android:layout_centerHorizontal="true">
 
             <ImageView
+                android:id="@+id/ivLogo"
+                android:transitionName="logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/margin_bottom"/>
+                android:layout_marginBottom="@dimen/margin_bottom"
+                android:onClick="@{loginViewModel::resetLogin}"/>
 
             <ProgressBar
                 android:id="@+id/loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:visibility="@{loginViewModel::isLoading ? View.VISIBLE : View.GONE}"/>
+                android:visibility="@{loginViewModel.loading ? View.VISIBLE : View.GONE}"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginBottom="10dp"
-                android:visibility="@{loginViewModel::isLoading ? View.GONE : View.VISIBLE}">
+                android:visibility="@{loginViewModel.loading ? View.GONE : View.VISIBLE}">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="@{loginViewModel::isEmail ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{loginViewModel.email ? View.VISIBLE : View.GONE}"
                     android:layout_marginBottom="@dimen/margin_bottom">
 
                     <android.support.design.widget.TextInputLayout
@@ -59,7 +62,7 @@
                             android:id="@+id/email"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
-                            android:text="@{loginViewModel::getUsername}"
+                            android:text="@{loginViewModel.username}"
                             android:hint="Email"/>
 
                     </android.support.design.widget.TextInputLayout>
@@ -73,7 +76,7 @@
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
                             android:inputType="textPassword"
-                            android:text="@{loginViewModel::getPassword}"
+                            android:text="@{loginViewModel.password}"
                             android:hint="Password"/>
 
                     </android.support.design.widget.TextInputLayout>
@@ -85,7 +88,8 @@
                     android:layout_gravity="center"
                     android:background="@android:color/white"
                     android:drawableLeft="@drawable/ic_email"
-                    android:padding="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
                     android:text="Sign In"
                     android:onClick="@{loginViewModel::signInEmail}"/>
 
@@ -96,7 +100,7 @@
                 android:layout_width="@dimen/button_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:visibility="@{loginViewModel::isLoading || loginViewModel::isEmail ? View.GONE : View.VISIBLE}"/>
+                android:visibility="@{loginViewModel.loading || loginViewModel.email? View.GONE : View.VISIBLE}"/>
 
         </LinearLayout>
     </RelativeLayout>
