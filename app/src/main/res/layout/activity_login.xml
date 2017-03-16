@@ -12,6 +12,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorPrimaryLight"
         android:fillViewport="true">
 
         <LinearLayout
@@ -84,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:background="@android:color/white"
+                    android:background="@color/colorPrimarySuperLight"
                     android:drawableLeft="@drawable/ic_account"
                     android:onClick="@{loginViewModel::signUpEmail}"
                     android:paddingLeft="15dp"
@@ -97,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:background="@android:color/white"
+                    android:background="@color/colorPrimarySuperLight"
                     android:drawableLeft="@drawable/ic_email"
                     android:onClick="@{loginViewModel::signInEmail}"
                     android:paddingLeft="15dp"
@@ -112,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:background="@android:color/white"
+                android:background="@color/colorPrimarySuperLight"
                 android:drawableLeft="@drawable/ic_google"
                 android:onClick="@{loginViewModel::signInGoogle}"
                 android:paddingLeft="15dp"
@@ -125,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:background="@android:color/white"
+                android:background="@color/colorPrimarySuperLight"
                 android:drawableLeft="@drawable/ic_facebook"
                 android:onClick="@{loginViewModel::signInGoogle}"
                 android:paddingLeft="15dp"

@@ -2,6 +2,7 @@ package br.com.henriquecocito.lunchtime.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.databinding.ObservableField;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -31,8 +32,8 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
 
     private boolean mIsLoading = false;
     private boolean mIsEmail = false;
-    private String mUsername;
-    private String mPassword;
+    private ObservableField<String> mUsername = new ObservableField<>();
+    private ObservableField<String> mPassword = new ObservableField<>();
 
     private FragmentActivity mActivity;
     private LoginListener mDataListener;
@@ -60,12 +61,12 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
 
     @Bindable
     public String getUsername() {
-        return mUsername;
+        return mUsername.get();
     }
 
     @Bindable
     public String getPassword() {
-        return mPassword;
+        return mPassword.get();
     }
 
     public void setLoading(boolean loading) {
@@ -75,6 +76,16 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
 
     public void setEmail(boolean email) {
         this.mIsEmail = email;
+        notifyChange();
+    }
+
+    public void setUsername(String username) {
+        this.mUsername.set(username);
+        notifyChange();
+    }
+
+    public void setPassword(String password) {
+        this.mPassword.set(password);
         notifyChange();
     }
 
@@ -168,7 +179,13 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
     }
 
     public void signUpEmail(View v) {
+        FirebaseAuth
+                .getInstance()
+                .createUserWithEmailAndPassword(mUsername, mPassword)
+                .addOnFailureListener(this)
+                .addOnCompleteListener(this);
 
+        mDataListener.onLogin(null);
     }
 
     public void resetLogin(View v) {

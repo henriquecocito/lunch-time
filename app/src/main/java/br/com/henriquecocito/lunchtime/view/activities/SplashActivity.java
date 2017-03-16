@@ -14,6 +14,7 @@ import android.view.View;
 
 import java.util.List;
 
+import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.databinding.ActivitySplashBinding;
 import br.com.henriquecocito.lunchtime.viewmodel.UserViewModel;
@@ -32,29 +33,28 @@ public class SplashActivity extends AppCompatActivity {
 
         mView = DataBindingUtil.setContentView(SplashActivity.this, R.layout.activity_splash);
 
+        LunchTimeApplication.hideBars(this);
+
         new Handler().postDelayed(new Runnable() {
 
             @Override
             public void run() {
                 if (UserViewModel.isLoggedIn()) {
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    finish();
                 } else {
                     ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SplashActivity.this, mView.ivLogo, "logo");
-                    startActivity(new Intent(SplashActivity.this, LoginActivity.class), options.toBundle());
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(intent, options.toBundle());
                 }
-//                finish();
-//                overridePendingTransition(0, 0);
             }
         }, 2000);
+    }
 
 
-//        setExitSharedElementCallback(new SharedElementCallback() {
-//
-//            @Override
-//            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-//                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
-//
-//            }
-//        });
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
     }
 }
