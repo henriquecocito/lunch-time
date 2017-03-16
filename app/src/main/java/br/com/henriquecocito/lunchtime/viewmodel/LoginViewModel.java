@@ -53,18 +53,9 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
         return mIsLoading;
     }
 
-    public void setLoading(boolean loading) {
-        mIsLoading = loading;
-        notifyChange();
-    }
-
+    @Bindable
     public boolean isEmail() {
         return mIsEmail;
-    }
-
-    public void setEmail(boolean email) {
-        this.mIsEmail = email;
-        notifyChange();
     }
 
     @Bindable
@@ -77,24 +68,31 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
         return mPassword;
     }
 
+    public void setLoading(boolean loading) {
+        mIsLoading = loading;
+        notifyChange();
+    }
+
+    public void setEmail(boolean email) {
+        this.mIsEmail = email;
+        notifyChange();
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         setLoading(false);
-
         mDataListener.onLoginError(new Throwable(connectionResult.getErrorMessage()));
     }
 
     @Override
     public void onFailure(@NonNull Exception e) {
         setLoading(false);
-
         mDataListener.onLoginError(e);
     }
 
     @Override
     public void onComplete(@NonNull Task task) {
         setLoading(false);
-
         if(!task.isSuccessful()) {
             mDataListener.onLoginError(task.getException());
         }
@@ -167,6 +165,10 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
 
             mDataListener.onLogin(null);
         }
+    }
+
+    public void signUpEmail(View v) {
+
     }
 
     public void resetLogin(View v) {

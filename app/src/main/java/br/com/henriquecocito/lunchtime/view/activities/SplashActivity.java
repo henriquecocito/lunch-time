@@ -7,7 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+
+import java.util.List;
 
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.databinding.ActivitySplashBinding;
@@ -27,26 +32,29 @@ public class SplashActivity extends AppCompatActivity {
 
         mView = DataBindingUtil.setContentView(SplashActivity.this, R.layout.activity_splash);
 
-//        if(UserViewModel.isLoggedIn()) {
-//            new Handler().postDelayed(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-//                    finish();
-//                }
-//            }, 1000);
-//            return;
-//        }
-//
-//        new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                if (UserViewModel.isLoggedIn()) {
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                } else {
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SplashActivity.this, mView.ivLogo, "logo");
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class), options.toBundle());
+                }
+//                finish();
+//                overridePendingTransition(0, 0);
+            }
+        }, 2000);
+
+
+//        setExitSharedElementCallback(new SharedElementCallback() {
 //
 //            @Override
-//            public void run() {
-//                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(SplashActivity.this, mView.ivLogo, "profile");
-//                startActivity(new Intent(SplashActivity.this, LoginActivity.class), options.toBundle());
-//                finish();
+//            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+//                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+//
 //            }
-//        }, 2500);
+//        });
     }
 }

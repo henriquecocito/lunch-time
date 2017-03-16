@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -14,12 +15,16 @@ import io.fabric.sdk.android.Fabric;
 public class LunchTimeApplication extends Application{
 
     public static Context CONTEXT;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         CONTEXT = getApplicationContext();
+
+
     }
 }

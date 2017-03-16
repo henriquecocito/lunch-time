@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (requestCode) {
             case MapFragment.REQUEST_PERMISSIONS:
-                if(grantResults[0] < 0 || grantResults[1] < 0) {
+                if(grantResults.length < 1 || grantResults[0] < 0 || grantResults[1] < 0) {
                     Snackbar
                             .make(mView.getRoot(), R.string.error_permission_location, Snackbar.LENGTH_INDEFINITE)
                             .setAction("Add permissions", new View.OnClickListener() {
