@@ -2,10 +2,21 @@ package br.com.henriquecocito.lunchtime.viewmodel;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.databinding.BindingAdapter;
 import android.databinding.ObservableField;
+import android.databinding.adapters.TextViewBindingAdapter;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -18,6 +29,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import br.com.henriquecocito.lunchtime.BR;
+import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
 
 /**
@@ -32,8 +45,8 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
 
     private boolean mIsLoading = false;
     private boolean mIsEmail = false;
-    private ObservableField<String> mUsername = new ObservableField<>();
-    private ObservableField<String> mPassword = new ObservableField<>();
+    private String mUsername;
+    private String mPassword;
 
     private FragmentActivity mActivity;
     private LoginListener mDataListener;
@@ -61,32 +74,32 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
 
     @Bindable
     public String getUsername() {
-        return mUsername.get();
+        return mUsername;
     }
 
     @Bindable
     public String getPassword() {
-        return mPassword.get();
+        return mPassword;
     }
 
     public void setLoading(boolean loading) {
         mIsLoading = loading;
-        notifyChange();
+        notifyPropertyChanged(BR.loading);
     }
 
     public void setEmail(boolean email) {
         this.mIsEmail = email;
-        notifyChange();
+        notifyPropertyChanged(BR.email);
     }
 
     public void setUsername(String username) {
-        this.mUsername.set(username);
-        notifyChange();
+        this.mUsername = username;
+        notifyPropertyChanged(BR.username);
     }
 
     public void setPassword(String password) {
-        this.mPassword.set(password);
-        notifyChange();
+        this.mPassword = password;
+        notifyPropertyChanged(BR.password);
     }
 
     @Override
@@ -164,13 +177,13 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
     public void signInEmail(View v) {
         setEmail(true);
 
-        if(mUsername != null && mPassword != null) {
+        if(getUsername() != null && getPassword() != null) {
 
             setLoading(true);
 
             FirebaseAuth
                     .getInstance()
-                    .signInWithEmailAndPassword(mUsername, mPassword)
+                    .signInWithEmailAndPassword(getUsername(), getPassword())
                     .addOnFailureListener(this)
                     .addOnCompleteListener(this);
 
@@ -181,7 +194,7 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
     public void signUpEmail(View v) {
         FirebaseAuth
                 .getInstance()
-                .createUserWithEmailAndPassword(mUsername, mPassword)
+                .createUserWithEmailAndPassword(getUsername(), getPassword())
                 .addOnFailureListener(this)
                 .addOnCompleteListener(this);
 
@@ -191,5 +204,55 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
     public void resetLogin(View v) {
         setEmail(false);
         setLoading(false);
+    }
+
+    @BindingAdapter("app:validate")
+    public static void setValidate(final EditText v, String value) {
+
+        v.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(!hasFocus) {
+
+                    if(v.getText().toString().isEmpty()) {
+                        v.setError(LunchTimeApplication.CONTEXT.getString(R.string.error_field_required));
+                        return;
+                    }
+
+                    switch (v.getInputType()) {
+                        case EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS:
+                            if(!Patterns.EMAIL_ADDRESS.matcher(v.getText().toString()).matches()) {
+                                v.setError(LunchTimeApplication.CONTEXT.getString(R.string.error_field_email));
+                            }
+                            return;
+                        case EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD:
+                            if(v.getText().toString().length() < 6) {
+                                v.setError(LunchTimeApplication.CONTEXT.getString(R.string.error_field_password));
+                            }
+                            return;
+                        default:
+                            return;
+                    }
+
+                }
+            }
+        });
+
+        v.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                v.setError(null);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 }

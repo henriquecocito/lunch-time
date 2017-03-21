@@ -20,6 +20,9 @@
     <string name="error_authentication">Authentication failed</string>
     <string name="error_google_play_services">Google Play Services error.</string>
     <string name="error_permission_location">Can\'t get the current location.</string>
+    <string name="error_field_required">This field is required.</string>
+    <string name="error_field_email">You must specify a valid email.</string>
+    <string name="error_field_password">Your password must have at least 6 characters.</string>
 
     <!-- Preferences -->
     <string name="pref_title_map">Map</string>
