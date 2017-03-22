@@ -133,7 +133,7 @@
                 android:layout_margin="10dp"
                 android:background="@color/colorPrimarySuperLight"
                 android:drawableLeft="@drawable/ic_facebook"
-                android:onClick="@{loginViewModel::signInGoogle}"
+                android:onClick="@{loginViewModel::signInFacebook}"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:text="@string/btn_sign_in"

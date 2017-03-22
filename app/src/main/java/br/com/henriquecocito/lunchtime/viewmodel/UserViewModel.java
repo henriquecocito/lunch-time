@@ -29,13 +29,18 @@ public class UserViewModel extends BaseObservable {
     }
 
     public String getPictureURL() {
-        return mUser.getPhotoUrl().toString();
+        if(mUser.getPhotoUrl() != null) {
+            return mUser.getPhotoUrl().toString();
+        }
+        return null;
     }
 
     @BindingAdapter("app:imageUrl")
     public static void setImageUrl(ImageView v, String url) {
-        Picasso.with(v.getContext().getApplicationContext())
-                .load(url)
-                .into(v);
+        if(url != null) {
+            Picasso.with(v.getContext().getApplicationContext())
+                    .load(url)
+                    .into(v);
+        }
     }
 }

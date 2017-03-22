@@ -18,6 +18,7 @@
 
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/googleApiKey"/>
         <meta-data android:name="io.fabric.ApiKey" android:value="38d3b5bf23173e28a1313575b4043a956f5e5cd3" />
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebookApiKey"/>
 
         <activity
             android:name=".view.activities.SplashActivity"

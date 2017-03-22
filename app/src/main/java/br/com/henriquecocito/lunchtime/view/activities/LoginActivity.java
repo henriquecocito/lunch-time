@@ -10,11 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.squareup.picasso.Picasso;
@@ -42,19 +48,24 @@ public class LoginActivity extends AppCompatActivity implements LoginViewModel.L
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == LoginViewModel.LOGIN_GOOGLE) {
+        switch(requestCode) {
+            case LoginViewModel.LOGIN_GOOGLE:
+                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                if (result.isSuccess()) {
 
-            if (result.isSuccess()) {
-
-                GoogleSignInAccount account = result.getSignInAccount();
-                AuthCredential token = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                mLoginViewModel.firebaseAuthWithCredential(token);
-            } else {
-                mLoginViewModel.resetLogin(null);
-                onLoginError(new Throwable(getString(R.string.error_authentication)));
-            }
+                    GoogleSignInAccount account = result.getSignInAccount();
+                    AuthCredential token = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                    mLoginViewModel.firebaseAuthWithCredential(token);
+                } else {
+                    mLoginViewModel.resetLogin(null);
+                    onLoginError(new Throwable(getString(R.string.error_authentication)));
+                }
+                break;
+            case LoginViewModel.LOGIN_FACEBOOK:
+                CallbackManager callbackManager = LoginViewModel.getFacebookCallbackManager();
+                callbackManager.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
 
@@ -71,9 +82,33 @@ public class LoginActivity extends AppCompatActivity implements LoginViewModel.L
     }
 
     @Override
-    public void onLogin(Object object) {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent((GoogleApiClient) object);
-        startActivityForResult(signInIntent, LoginViewModel.LOGIN_GOOGLE);
+    public void onLogin(Object object, int provider) {
+        switch (provider) {
+            case LoginViewModel.LOGIN_GOOGLE:
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent((GoogleApiClient) object);
+                startActivityForResult(signInIntent, LoginViewModel.LOGIN_GOOGLE);
+                break;
+            case LoginViewModel.LOGIN_FACEBOOK:
+
+                LoginManager.getInstance().registerCallback((CallbackManager) object, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        AuthCredential token = FacebookAuthProvider.getCredential(loginResult.getAccessToken().getToken());
+                        mLoginViewModel.firebaseAuthWithCredential(token);
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        onLoginError(error);
+                    }
+                });
+                break;
+        }
     }
 
     @Override

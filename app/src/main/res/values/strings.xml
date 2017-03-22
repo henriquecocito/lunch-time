@@ -4,6 +4,7 @@
     <!-- Manifest -->
     <string name="googleApiKey">AIzaSyBquQHgrNtqJduLGCpawhfCFcga98bwtfg</string>
     <string name="fabricApiKey">38d3b5bf23173e28a1313575b4043a956f5e5cd3</string>
+    <string name="facebookApiKey">275131476244006</string>
 
     <!-- Navigation -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

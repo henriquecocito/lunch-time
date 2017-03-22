@@ -3,9 +3,11 @@ package br.com.henriquecocito.lunchtime;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.hardware.camera2.params.Face;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookSdk;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import io.fabric.sdk.android.Fabric;
@@ -22,8 +24,8 @@ public class LunchTimeApplication extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Fabric.with(this, new Crashlytics());
 
         CONTEXT = getApplicationContext();
     }
