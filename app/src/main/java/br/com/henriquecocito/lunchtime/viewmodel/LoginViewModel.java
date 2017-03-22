@@ -3,27 +3,17 @@ package br.com.henriquecocito.lunchtime.viewmodel;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
-import android.databinding.ObservableField;
-import android.databinding.adapters.TextViewBindingAdapter;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.internal.CallbackManagerImpl;
 import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -32,7 +22,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -114,24 +103,12 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
         notifyPropertyChanged(BR.password);
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        setLoading(false);
-        mDataListener.onLoginError(new Throwable(connectionResult.getErrorMessage()));
-    }
-
-    @Override
-    public void onFailure(@NonNull Exception e) {
-        setLoading(false);
-        mDataListener.onLoginError(e);
-    }
-
-    @Override
-    public void onComplete(@NonNull Task task) {
-        if(!task.isSuccessful()) {
-            setLoading(false);
-            mDataListener.onLoginError(task.getException());
+    public static CallbackManager getFacebookCallbackManager() {
+        if(mCallbackManager == null) {
+            mCallbackManager = CallbackManager.Factory.create();
         }
+
+        return mCallbackManager;
     }
 
     public void setAuthListener() {
@@ -160,12 +137,24 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
         }
     }
 
-    public static CallbackManager getFacebookCallbackManager() {
-        if(mCallbackManager == null) {
-            mCallbackManager = CallbackManager.Factory.create();
-        }
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        setLoading(false);
+        mDataListener.onLoginError(new Throwable(connectionResult.getErrorMessage()));
+    }
 
-        return mCallbackManager;
+    @Override
+    public void onFailure(@NonNull Exception e) {
+        setLoading(false);
+        mDataListener.onLoginError(e);
+    }
+
+    @Override
+    public void onComplete(@NonNull Task task) {
+        if(!task.isSuccessful()) {
+            setLoading(false);
+            mDataListener.onLoginError(task.getException());
+        }
     }
 
     public void firebaseAuthWithCredential(AuthCredential token) {
@@ -212,6 +201,8 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
     }
 
     public void signUpEmail(View v) {
+        setLoading(true);
+        
         FirebaseAuth
                 .getInstance()
                 .createUserWithEmailAndPassword(getUsername(), getPassword())

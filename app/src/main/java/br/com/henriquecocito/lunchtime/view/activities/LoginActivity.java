@@ -1,14 +1,11 @@
 package br.com.henriquecocito.lunchtime.view.activities;
 
 import android.content.Intent;
-import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -23,7 +20,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.squareup.picasso.Picasso;
 
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.databinding.ActivityLoginBinding;
@@ -45,6 +41,18 @@ public class LoginActivity extends AppCompatActivity implements LoginViewModel.L
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mLoginViewModel.setAuthListener();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mLoginViewModel.removeAuthListener();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -53,7 +61,6 @@ public class LoginActivity extends AppCompatActivity implements LoginViewModel.L
                 GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
                 if (result.isSuccess()) {
-
                     GoogleSignInAccount account = result.getSignInAccount();
                     AuthCredential token = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                     mLoginViewModel.firebaseAuthWithCredential(token);
@@ -67,18 +74,6 @@ public class LoginActivity extends AppCompatActivity implements LoginViewModel.L
                 callbackManager.onActivityResult(requestCode, resultCode, data);
                 break;
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mLoginViewModel.setAuthListener();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mLoginViewModel.removeAuthListener();
     }
 
     @Override
@@ -99,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewModel.L
 
                     @Override
                     public void onCancel() {
-
+                        onLoginError(new Throwable(getString(R.string.error_authentication)));
                     }
 
                     @Override
