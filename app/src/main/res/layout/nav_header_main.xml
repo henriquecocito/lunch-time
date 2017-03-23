@@ -1,50 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <data>
         <variable
-            name="user"
+            name="userViewModel"
             type="br.com.henriquecocito.lunchtime.viewmodel.UserViewModel"/>
     </data>
-    
-    <LinearLayout 
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/nav_header_height"
-        android:background="@color/colorPrimaryDark"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark">
-    
+        android:layout_height="200dp"
+        android:background="@color/colorPrimaryLight">
+
+        <RelativeLayout
+            android:id="@+id/layoutTop"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/nav_header_height"
+            android:background="@drawable/bg_header"
+            android:clipToPadding="true"
+            android:gravity="bottom"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/email"
+                android:layout_marginBottom="2dp"
+                android:text="@{userViewModel.name}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/textPrimary"
+                android:textSize="28sp" />
+
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:text="@{userViewModel.email}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@color/textPrimary"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutBottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/layoutTop"/>
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/picture"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="@dimen/nav_header_vertical_spacing"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:background="@drawable/circle"
             android:padding="@dimen/activity_vertical_margin"
-            app:imageUrl="@{user.getPictureURL()}"/>
-    
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{user.getName()}"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/textPrimary"
-            android:textSize="18sp"/>
-    
-        <TextView
-            android:id="@+id/email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{user.getEmail()}"
-            android:textColor="@color/textSecondary"
-            android:textSize="13sp"/>
-    
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:imageUrl="@{userViewModel.pictureURL}"/>
+
+    </RelativeLayout>
 </layout>

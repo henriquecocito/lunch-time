@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setupNavigationDrawer(DrawerLayout drawerLayout, Toolbar toolbar) {
         NavHeaderMainBinding headerBinding = DataBindingUtil.bind(mView.navView.getHeaderView(0));
-        headerBinding.setUser(new UserViewModel());
+        headerBinding.setUserViewModel(new UserViewModel());
 
         mView.navView.setNavigationItemSelectedListener(this);
         mView.navView.setCheckedItem(0);
