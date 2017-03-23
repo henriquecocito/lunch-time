@@ -23,7 +23,10 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
 
+import br.com.henriquecocito.lunchtime.LunchTimeApplication;
+import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.model.Map;
+import br.com.henriquecocito.lunchtime.utils.BaseFragment;
 import br.com.henriquecocito.lunchtime.view.activities.DetailActivity;
 import br.com.henriquecocito.lunchtime.viewmodel.MapViewModel;
 
@@ -31,13 +34,18 @@ import br.com.henriquecocito.lunchtime.viewmodel.MapViewModel;
  * Created by HenriqueCocito on 02/03/17.
  */
 
-public class MapFragment extends SupportMapFragment implements MapViewModel.MapDataListener {
+public class MapFragment extends SupportMapFragment implements BaseFragment, MapViewModel.MapDataListener {
 
     public final static int REQUEST_PERMISSIONS = 2;
 
     private MapViewModel mMapViewModel;
     private GoogleMap mGoogleMap;
     private Location mLocation;
+
+    @Override
+    public String getFragmentTitle() {
+        return LunchTimeApplication.CONTEXT.getString(R.string.action_map);
+    }
 
     @Override
     public void onCreate(Bundle bundle) {

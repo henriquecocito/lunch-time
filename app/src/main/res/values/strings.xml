@@ -11,11 +11,13 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- Actions -->
-    <string name="action_map">Find Restaurants</string>
+    <string name="action_find">Find Restaurants</string>
     <string name="action_restaurant">Ranking</string>
     <string name="action_settings">Settings</string>
     <string name="action_detail">Detail</string>
     <string name="action_vote">Vote</string>
+    <string name="action_map">Map</string>
+    <string name="action_list">List</string>
 
     <!-- Errors -->
     <string name="error_authentication">Authentication failed</string>

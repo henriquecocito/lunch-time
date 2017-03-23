@@ -202,7 +202,7 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
 
     public void signUpEmail(View v) {
         setLoading(true);
-        
+
         FirebaseAuth
                 .getInstance()
                 .createUserWithEmailAndPassword(getUsername(), getPassword())

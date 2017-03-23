@@ -39,7 +39,7 @@
 
         <activity
             android:name=".view.activities.MainActivity"
-            android:label="@string/action_map"
+            android:label="@string/action_find"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
