@@ -22,6 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         mView = DataBindingUtil.setContentView(SettingsActivity.this, R.layout.activity_settings);
 
+        setSupportActionBar(mView.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

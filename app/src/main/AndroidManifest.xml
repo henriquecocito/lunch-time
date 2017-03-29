@@ -39,8 +39,8 @@
 
         <activity
             android:name=".view.activities.MainActivity"
-            android:label="@string/action_find"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/action_find"/>
 
         <activity
             android:name=".view.activities.DetailActivity"
@@ -54,7 +54,7 @@
         
         <activity
             android:name=".view.activities.SettingsActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/action_settings"/>
     </application>
 </manifest>

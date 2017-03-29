@@ -1,6 +1,5 @@
 package br.com.henriquecocito.lunchtime.view.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -16,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -29,7 +27,7 @@ import br.com.henriquecocito.lunchtime.databinding.ContentMainBinding;
 import br.com.henriquecocito.lunchtime.databinding.NavHeaderMainBinding;
 import br.com.henriquecocito.lunchtime.utils.BaseFragment;
 import br.com.henriquecocito.lunchtime.view.fragments.MapFragment;
-import br.com.henriquecocito.lunchtime.view.fragments.PlacesFragment;
+import br.com.henriquecocito.lunchtime.view.fragments.ListFragment;
 import br.com.henriquecocito.lunchtime.viewmodel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -50,8 +48,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupNavigationDrawer(mView.drawerLayout, toolbar);
 
         mFragments = new ArrayList<>();
+        mFragments.add(new ListFragment());
         mFragments.add(new MapFragment());
-        mFragments.add(new PlacesFragment());
 
         mContentBinding = DataBindingUtil.bind(mView.drawerLayout.findViewById(R.id.rootView));
         setupPager(mContentBinding.pager, mContentBinding.tabbar);
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onRestart() {
         super.onRestart();
 
-        MapFragment mapFragment = (MapFragment) mFragments.get(0);
+        MapFragment mapFragment = (MapFragment) mFragments.get(1);
         mapFragment.setupGoogleMaps();
     }
 

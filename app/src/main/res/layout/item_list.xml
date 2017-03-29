@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="itemListViewModel"
+            type="br.com.henriquecocito.lunchtime.viewmodel.ItemListViewModel"/>
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/card_margin"
+        android:elevation="@dimen/card_elevation">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/picture"
+                android:layout_width="@dimen/card_image_size"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:padding="@dimen/card_image_padding"
+                android:background="@color/background"
+                android:contentDescription="Restaurant"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_margin="@dimen/card_margin"
+                android:layout_toEndOf="@+id/picture"
+                android:textColor="@color/textPrimary"
+                android:textSize="@dimen/card_title_size"
+                android:text="@{itemListViewModel.title}"
+                android:contentDescription="Title"
+                tools:text="Title" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/picture"
+                android:layout_alignParentBottom="true">
+
+                <TextView
+                    android:id="@+id/placeName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/card_margin"
+                    android:layout_weight="0.5"
+                    android:gravity="start|center"
+                    android:drawableLeft="@drawable/ic_map"
+                    android:drawableTint="@color/textSecondary"
+                    android:textColor="@color/textSecondary"
+                    android:contentDescription="Place"
+                    tools:text="Place"/>
+
+                <TextView
+                    android:id="@+id/placeDistance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/card_margin"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/textSecondary"
+                    android:contentDescription="Distance"
+                    tools:text="0.0 km"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</layout>

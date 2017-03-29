@@ -215,7 +215,6 @@ public class LoginViewModel extends BaseObservable implements GoogleApiClient.On
         setLoading(true);
 
         mDataListener.onLogin(getFacebookCallbackManager(), LOGIN_FACEBOOK);
-
         LoginManager.getInstance().logInWithReadPermissions(mActivity, Arrays.asList("email", "public_profile"));
     }
 
