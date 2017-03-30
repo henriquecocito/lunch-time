@@ -38,4 +38,5 @@
     <!-- Buttons -->
     <string name="btn_sign_in">Sign In</string>
     <string name="btn_sign_up">Sign Up</string>
+    <string name="pref_default_radius">200</string>
 </resources>

@@ -1,6 +1,7 @@
 package br.com.henriquecocito.lunchtime.viewmodel;
 
 import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.widget.ImageView;
 
@@ -23,14 +24,17 @@ public class UserViewModel extends BaseObservable {
         return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
+    @Bindable
     public String getName() {
         return mUser.getDisplayName();
     }
 
+    @Bindable
     public String getEmail() {
         return mUser.getEmail();
     }
 
+    @Bindable
     public String getPictureURL() {
         if(mUser.getPhotoUrl() != null) {
             return mUser.getPhotoUrl().toString();

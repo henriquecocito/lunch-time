@@ -12,15 +12,4 @@ import br.com.henriquecocito.lunchtime.model.Vote;
  */
 
 public class ItemRankingViewModel extends BaseObservable {
-    private Context mContext;
-    private Vote mVote;
-
-    public ItemRankingViewModel(Context context, Vote vote) {
-        this.mContext = context;
-        this.mVote = vote;
-    }
-
-    public void onClick(View v) {
-        int i = 0;
-    }
 }

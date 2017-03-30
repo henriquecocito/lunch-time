@@ -7,7 +7,4 @@ import android.databinding.BaseObservable;
  */
 
 public class RankingViewModel extends BaseObservable {
-
-    public void loadRanking() {
-    }
 }

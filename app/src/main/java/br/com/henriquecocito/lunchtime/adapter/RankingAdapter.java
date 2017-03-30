@@ -37,7 +37,7 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.binding.setPlace(new ItemRankingViewModel(mContext, mData.get(position)));
+//        holder.binding.setPlace(new ItemRankingViewModel(mContext, mData.get(position)));
     }
 
     @Override

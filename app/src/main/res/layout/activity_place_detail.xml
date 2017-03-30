@@ -35,7 +35,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:src="@drawable/placeholder"
-                    app:photoUrl="@{place.getPhoto()}"
                     android:scaleType="centerCrop" />
 
                 <TextView
@@ -47,7 +46,6 @@
                     android:textAlignment="center"
                     android:paddingTop="15dp"
                     android:textColor="@android:color/black"
-                    android:text="@{vote.getVotes()}"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_margin="20dp"/>
@@ -65,22 +63,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/description"
-                    android:layout_marginBottom="@dimen/margin_bottom"
-                    android:text="@{place.getAddress()}"/>
+                    android:layout_marginBottom="@dimen/margin_bottom"/>
 
                 <TextView
                     android:id="@+id/phone"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{place.getPhone() != null ? View.VISIBLE: View.GONE}"
-                    android:text="@{`Phone: ` + place.getPhone()}"/>
+                    android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/website"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="@{place.getWebsite() != null ? View.VISIBLE: View.GONE}"
-                    android:text="@{`Website: ` + place.getWebsite()}"/>
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

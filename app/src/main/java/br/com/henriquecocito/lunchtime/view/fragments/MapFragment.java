@@ -56,7 +56,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
 
         mLocation = getLastKnownLocation();
 
-        setupGoogleMaps();
+//        setupGoogleMaps();
     }
 
     @Override
