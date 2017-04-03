@@ -20,6 +20,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 
+import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.adapter.ViewPagerAdapter;
 import br.com.henriquecocito.lunchtime.databinding.ActivityMainBinding;
@@ -32,6 +33,8 @@ import br.com.henriquecocito.lunchtime.viewmodel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public final static int REQUEST_PERMISSIONS = 2;
+
     ActivityMainBinding mView;
     ContentMainBinding mContentBinding;
     ArrayList<BaseFragment> mFragments;
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LunchTimeApplication.loadLocation(this);
 
         mView = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
@@ -97,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         switch (requestCode) {
-            case MapFragment.REQUEST_PERMISSIONS:
+            case REQUEST_PERMISSIONS:
                 if(grantResults.length < 1 || grantResults[0] < 0 || grantResults[1] < 0) {
                     Snackbar
                             .make(mView.getRoot(), R.string.error_permission_location, Snackbar.LENGTH_INDEFINITE)

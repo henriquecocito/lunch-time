@@ -7,22 +7,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.databinding.ItemListBinding;
+import br.com.henriquecocito.lunchtime.model.Place;
 import br.com.henriquecocito.lunchtime.viewmodel.ItemListViewModel;
 
 /**
  * Created by hrcocito on 28/03/17.
  */
 
-public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private Context mContext;
-    private ArrayList<String> mData;
+    private List<Place> mData;
 
-    public BaseAdapter(Context context, ArrayList<String> data) {
+    public MainAdapter(Context context, List<Place> data) {
         this.mContext = context;
         this.mData = data;
     }

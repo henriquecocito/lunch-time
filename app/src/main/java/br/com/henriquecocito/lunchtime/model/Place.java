@@ -1,12 +1,14 @@
 package br.com.henriquecocito.lunchtime.model;
 
+import android.location.Location;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by HenriqueCocito on 03/03/17.
@@ -23,7 +25,7 @@ public class Place {
 
     @Expose
     @SerializedName("geometry")
-    private JSONObject mGeometry;
+    private Map<String, Map<String, Object>> mGeometry;
 
     @Expose
     @SerializedName("photos")
@@ -57,11 +59,14 @@ public class Place {
         this.mName = name;
     }
 
-    public JSONObject getGeometry() {
-        return mGeometry;
+    public Location getGeometry() {
+        Location geometry = new Location("gps");
+        geometry.setLatitude((Double) mGeometry.get("location").get("lat"));
+        geometry.setLongitude((Double) mGeometry.get("location").get("lng"));
+        return geometry;
     }
 
-    public void setGeometry(JSONObject geometry) {
+    public void setGeometry(Map<String, Map<String, Object>> geometry) {
         this.mGeometry = geometry;
     }
 

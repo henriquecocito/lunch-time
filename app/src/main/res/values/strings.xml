@@ -34,9 +34,14 @@
     <string name="pref_title_account">Account</string>
     <string name="pref_title_logout">Logout</string>
     <string name="pref_key_logout">logout</string>
+    <string name="pref_default_radius">200</string>
 
     <!-- Buttons -->
     <string name="btn_sign_in">Sign In</string>
     <string name="btn_sign_up">Sign Up</string>
-    <string name="pref_default_radius">200</string>
+    <string name="btn_try_again">Try again</string>
+
+    <!-- Fonts -->
+    <string name="font_primary">OpenSans-CondLight</string>
+    <string name="font_secondary">Dosis-Light</string>
 </resources>

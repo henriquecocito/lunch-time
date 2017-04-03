@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
-import br.com.henriquecocito.lunchtime.model.Map;
+import br.com.henriquecocito.lunchtime.model.Maps;
 import br.com.henriquecocito.lunchtime.utils.APIClient;
 import rx.Observable;
 import rx.Subscriber;
@@ -28,13 +28,13 @@ import rx.schedulers.Schedulers;
 
 public class MapViewModel {
 
-    private ArrayList<Map> mPlaces = new ArrayList<>();
+    private ArrayList<Maps> mPlaces = new ArrayList<>();
     private MapDataListener mDataListener;
 
     public interface MapDataListener {
-        void onMapChanged(ArrayList<Map> maps);
+        void onMapChanged(ArrayList<Maps> maps);
         void onMapError(Throwable error);
-        void onMapLoaded(ArrayList<Map> maps);
+        void onMapLoaded(ArrayList<Maps> maps);
     }
 
     public void setDataListener(MapDataListener dataListener) {
@@ -59,24 +59,24 @@ public class MapViewModel {
         APIClient
                 .getInstance()
                 .getPlaces(params)
-                .flatMap(new Func1<LinkedTreeMap<String, Object>, Observable<ArrayList<Map>>>() {
+                .flatMap(new Func1<LinkedTreeMap<String, Object>, Observable<ArrayList<Maps>>>() {
 
                     @Override
-                    public Observable<ArrayList<Map>> call(LinkedTreeMap<String, Object> object) {
+                    public Observable<ArrayList<Maps>> call(LinkedTreeMap<String, Object> object) {
 
                         Gson gson = new Gson();
                         ArrayList<LinkedTreeMap<String, Object>> results = (ArrayList<LinkedTreeMap<String, Object>>) object.get("results");
                         mPlaces.clear();
                         for (int i = 0; i < results.size(); i++) {
                             JsonObject jsonObject = gson.toJsonTree(results.get(i)).getAsJsonObject();
-                            mPlaces.add(gson.fromJson(jsonObject, Map.class));
+                            mPlaces.add(gson.fromJson(jsonObject, Maps.class));
                         }
                         return Observable.just(mPlaces);
                     }
                 })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ArrayList<Map>>() {
+                .subscribe(new Subscriber<ArrayList<Maps>>() {
                     @Override
                     public void onCompleted() {
                         mDataListener.onMapLoaded(mPlaces);
@@ -88,7 +88,7 @@ public class MapViewModel {
                     }
 
                     @Override
-                    public void onNext(ArrayList<Map> maps) {
+                    public void onNext(ArrayList<Maps> maps) {
                         mDataListener.onMapChanged(maps);
                     }
                 });

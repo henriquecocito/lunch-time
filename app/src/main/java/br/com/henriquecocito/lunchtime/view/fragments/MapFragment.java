@@ -25,9 +25,10 @@ import java.util.ArrayList;
 
 import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
-import br.com.henriquecocito.lunchtime.model.Map;
+import br.com.henriquecocito.lunchtime.model.Maps;
 import br.com.henriquecocito.lunchtime.utils.BaseFragment;
 import br.com.henriquecocito.lunchtime.view.activities.DetailActivity;
+import br.com.henriquecocito.lunchtime.view.activities.MainActivity;
 import br.com.henriquecocito.lunchtime.viewmodel.MapViewModel;
 
 /**
@@ -35,8 +36,6 @@ import br.com.henriquecocito.lunchtime.viewmodel.MapViewModel;
  */
 
 public class MapFragment extends SupportMapFragment implements BaseFragment, MapViewModel.MapDataListener {
-
-    public final static int REQUEST_PERMISSIONS = 2;
 
     private MapViewModel mMapViewModel;
     private GoogleMap mGoogleMap;
@@ -60,8 +59,8 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
     }
 
     @Override
-    public void onMapChanged(ArrayList<Map> maps) {
-        for(Map map : maps) {
+    public void onMapChanged(ArrayList<Maps> maps) {
+        for(Maps map : maps) {
             pinMap(map);
         }
     }
@@ -72,7 +71,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
     }
 
     @Override
-    public void onMapLoaded(final ArrayList<Map> maps) {
+    public void onMapLoaded(final ArrayList<Maps> maps) {
 
         // Zoom camera
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLocation.getLatitude(), mLocation.getLongitude()), 17));
@@ -81,7 +80,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
         mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                for (Map result : maps) {
+                for (Maps result : maps) {
                     if(result.getId() == marker.getTag()) {
                         Intent intent = new Intent(getActivity(), DetailActivity.class);
                         intent.putExtra("placeid", result.getPlaceId());
@@ -111,7 +110,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
                     ActivityCompat.requestPermissions(
                             getActivity(),
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                            REQUEST_PERMISSIONS
+                            MainActivity.REQUEST_PERMISSIONS
                     );
                     return;
                 }
@@ -126,7 +125,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
         });
     }
 
-    private void pinMap(Map map) {
+    private void pinMap(Maps map) {
 
         // Check permissions
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -135,7 +134,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
             ActivityCompat.requestPermissions(
                     getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    REQUEST_PERMISSIONS
+                    MainActivity.REQUEST_PERMISSIONS
             );
             return;
         }
@@ -164,7 +163,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
             ActivityCompat.requestPermissions(
                     getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    REQUEST_PERMISSIONS
+                    MainActivity.REQUEST_PERMISSIONS
             );
             return null;
         }

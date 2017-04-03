@@ -11,7 +11,7 @@ import java.util.List;
  * Created by HenriqueCocito on 03/03/17.
  */
 
-public class Map {
+public class Maps {
 
     @SerializedName("geometry")
     @Expose
