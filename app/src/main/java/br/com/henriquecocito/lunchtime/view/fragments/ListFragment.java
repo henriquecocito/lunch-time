@@ -25,9 +25,12 @@ import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.adapter.MainAdapter;
 import br.com.henriquecocito.lunchtime.databinding.FragmentListBinding;
 import br.com.henriquecocito.lunchtime.model.Place;
+import br.com.henriquecocito.lunchtime.utils.APIClient;
 import br.com.henriquecocito.lunchtime.utils.BaseFragment;
+import br.com.henriquecocito.lunchtime.utils.Utils;
 import br.com.henriquecocito.lunchtime.view.activities.MainActivity;
 import br.com.henriquecocito.lunchtime.viewmodel.PlaceViewModel;
+import rx.Subscriber;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -37,10 +40,11 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class ListFragment extends Fragment implements BaseFragment, SwipeRefreshLayout.OnRefreshListener, PlaceViewModel.PlaceDataListener {
 
-    FragmentListBinding mView;
-    MainAdapter mainAdapter;
-    List<Place> mPlaces = new ArrayList<>();
-    PlaceViewModel mPlaceViewModel = new PlaceViewModel(this);
+    private FragmentListBinding mView;
+    private MainAdapter mainAdapter;
+    private Location mLocation = new Location(LocationManager.GPS_PROVIDER);
+    private List<Place> mPlaces = new ArrayList<>();
+    private PlaceViewModel mPlaceViewModel;
 
     @Override
     public String getFragmentTitle() {
@@ -51,12 +55,15 @@ public class ListFragment extends Fragment implements BaseFragment, SwipeRefresh
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container, false);
-        mView.refresh.setOnRefreshListener(this);
 
+        mPlaceViewModel = new PlaceViewModel(getActivity(), this);
+        mView.setPlaceViewModel(mPlaceViewModel);
+
+        mainAdapter = new MainAdapter(getActivity(), mLocation, mPlaces);
+        mView.list.setAdapter(mainAdapter);
         mView.list.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mainAdapter = new MainAdapter(getActivity(), mPlaces);
-        mView.list.setAdapter(mainAdapter);
+        mView.refresh.setOnRefreshListener(this);
 
         return mView.list;
     }
@@ -74,12 +81,18 @@ public class ListFragment extends Fragment implements BaseFragment, SwipeRefresh
 
     @Override
     public void onRefresh() {
-        mPlaceViewModel.getPlaces(LunchTimeApplication.getLocation());
+        mPlaceViewModel.getPlaces();
     }
 
     @Override
     public void onEmpty() {
 
+    }
+
+    @Override
+    public void onLocalized(Location location) {
+        mLocation.set(location);
+        mainAdapter.notifyDataSetChanged();
     }
 
     @Override

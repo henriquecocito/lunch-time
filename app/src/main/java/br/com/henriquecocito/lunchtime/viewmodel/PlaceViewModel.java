@@ -1,14 +1,17 @@
 package br.com.henriquecocito.lunchtime.viewmodel;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.preference.PreferenceManager;
 import android.widget.TextView;
 
+import com.android.databinding.library.baseAdapters.BR;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.internal.LinkedTreeMap;
@@ -23,6 +26,7 @@ import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.model.Place;
 import br.com.henriquecocito.lunchtime.utils.APIClient;
+import br.com.henriquecocito.lunchtime.utils.Utils;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -35,20 +39,59 @@ import rx.schedulers.Schedulers;
 
 public class PlaceViewModel extends BaseObservable {
 
+    private Activity mActivity;
     private PlaceDataListener mDataListener;
     private ArrayList<Place> mPlaces = new ArrayList<>();
+    private boolean mLoading = false;
 
-    public PlaceViewModel(PlaceDataListener dataListener) {
+    public PlaceViewModel(Activity activity, PlaceDataListener dataListener) {
+        this.mActivity = activity;
         this.mDataListener = dataListener;
     }
 
     public interface PlaceDataListener {
         void onEmpty();
+        void onLocalized(Location location);
         void onCompleted(List<Place> places);
         void onError(Throwable error);
     }
 
-    public void getPlaces(Location location) {
+    public void setLoading(boolean loading) {
+        this.mLoading = loading;
+        notifyPropertyChanged(BR.loading);
+    }
+
+    @Bindable
+    public boolean isLoading() {
+        return mLoading;
+    }
+
+    public void getPlaces() {
+        setLoading(true);
+        Utils
+                .getLocation(mActivity)
+                .subscribe(new Subscriber<Location>() {
+                    @Override
+                    public void onCompleted() {
+                        setLoading(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        int i = 0;
+                    }
+
+                    @Override
+                    public void onNext(Location location) {
+                        mDataListener.onLocalized(location);
+                        getNearByPlaces(location);
+                    }
+                });
+    }
+
+    public void getNearByPlaces(Location location) {
+
+        setLoading(true);
 
         // Get application context
         Context context = LunchTimeApplication.CONTEXT;
@@ -84,11 +127,13 @@ public class PlaceViewModel extends BaseObservable {
                             mDataListener.onEmpty();
                         }
                         mDataListener.onCompleted(mPlaces);
+                        setLoading(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         mDataListener.onError(e);
+                        setLoading(false);
                     }
 
                     @Override

@@ -2,6 +2,7 @@ package br.com.henriquecocito.lunchtime.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.location.Location;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +22,12 @@ import br.com.henriquecocito.lunchtime.viewmodel.ItemListViewModel;
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private Context mContext;
+    private Location mLocation;
     private List<Place> mData;
 
-    public MainAdapter(Context context, List<Place> data) {
+    public MainAdapter(Context context, Location location, List<Place> data) {
         this.mContext = context;
+        this.mLocation = location;
         this.mData = data;
     }
 
@@ -35,7 +38,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mItemListBinding.setItemListViewModel(new ItemListViewModel(mData.get(position)));
+        holder.mItemListBinding.setItemListViewModel(new ItemListViewModel(mLocation, mData.get(position)));
     }
 
     @Override

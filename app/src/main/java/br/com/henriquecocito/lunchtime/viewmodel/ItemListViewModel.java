@@ -35,9 +35,11 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class ItemListViewModel extends BaseObservable {
 
+    private Location mCurrentLocation;
     private Place mPlace;
 
-    public ItemListViewModel(Place place) {
+    public ItemListViewModel(Location location, Place place) {
+        this.mCurrentLocation = location;
         this.mPlace = place;
     }
 
@@ -62,6 +64,6 @@ public class ItemListViewModel extends BaseObservable {
 
     @Bindable
     public String getDistance() {
-        return String.format("%d m", Math.round(LunchTimeApplication.getLocation().distanceTo(mPlace.getGeometry())));
+        return String.format("%d m", Math.round(mCurrentLocation.distanceTo(mPlace.getGeometry())));
     }
 }

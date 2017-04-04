@@ -17,6 +17,7 @@ import java.util.List;
 import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.databinding.ActivitySplashBinding;
+import br.com.henriquecocito.lunchtime.utils.Utils;
 import br.com.henriquecocito.lunchtime.viewmodel.UserViewModel;
 
 /**

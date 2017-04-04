@@ -110,7 +110,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
                     ActivityCompat.requestPermissions(
                             getActivity(),
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                            MainActivity.REQUEST_PERMISSIONS
+                            LunchTimeApplication.REQUEST_PERMISSIONS
                     );
                     return;
                 }
@@ -134,7 +134,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
             ActivityCompat.requestPermissions(
                     getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    MainActivity.REQUEST_PERMISSIONS
+                    LunchTimeApplication.REQUEST_PERMISSIONS
             );
             return;
         }
@@ -163,7 +163,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
             ActivityCompat.requestPermissions(
                     getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    MainActivity.REQUEST_PERMISSIONS
+                    LunchTimeApplication.REQUEST_PERMISSIONS
             );
             return null;
         }
