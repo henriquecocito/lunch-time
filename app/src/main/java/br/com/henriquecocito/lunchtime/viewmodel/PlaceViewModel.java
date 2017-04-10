@@ -1,17 +1,15 @@
 package br.com.henriquecocito.lunchtime.viewmodel;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.databinding.BindingAdapter;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.preference.PreferenceManager;
-import android.widget.TextView;
+import android.support.v4.app.ActivityCompat;
 
-import com.android.databinding.library.baseAdapters.BR;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.internal.LinkedTreeMap;
@@ -42,7 +40,7 @@ public class PlaceViewModel extends BaseObservable {
     private Activity mActivity;
     private PlaceDataListener mDataListener;
     private ArrayList<Place> mPlaces = new ArrayList<>();
-    private boolean mLoading = false;
+    private boolean mIsLoading = false;
 
     public PlaceViewModel(Activity activity, PlaceDataListener dataListener) {
         this.mActivity = activity;
@@ -56,42 +54,41 @@ public class PlaceViewModel extends BaseObservable {
         void onError(Throwable error);
     }
 
-    public void setLoading(boolean loading) {
-        this.mLoading = loading;
-        notifyPropertyChanged(BR.loading);
-    }
-
     @Bindable
     public boolean isLoading() {
-        return mLoading;
+        return mIsLoading;
     }
 
     public void getPlaces() {
-        setLoading(true);
-        Utils
-                .getLocation(mActivity)
-                .subscribe(new Subscriber<Location>() {
-                    @Override
-                    public void onCompleted() {
-                        setLoading(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        int i = 0;
-                    }
-
-                    @Override
-                    public void onNext(Location location) {
-                        mDataListener.onLocalized(location);
-                        getNearByPlaces(location);
-                    }
-                });
+        mIsLoading = true;
+//        Utils
+//                .getLocation(mActivity)
+//                .subscribe(new Subscriber<Location>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        mIsLoading = false;
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ActivityCompat.requestPermissions(
+//                                mActivity,
+//                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+//                                LunchTimeApplication.REQUEST_PERMISSIONS
+//                        );
+//                    }
+//
+//                    @Override
+//                    public void onNext(Location location) {
+////                        mDataListener.onLocalized(location);
+//                        getNearByPlaces(location);
+//                    }
+//                });
     }
 
     public void getNearByPlaces(Location location) {
 
-        setLoading(true);
+        mIsLoading = true;
 
         // Get application context
         Context context = LunchTimeApplication.CONTEXT;
@@ -118,8 +115,6 @@ public class PlaceViewModel extends BaseObservable {
                         return Observable.just((List<Place>) gson.fromJson(jsonArray, listType));
                     }
                 })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Place>>() {
                     @Override
                     public void onCompleted() {
@@ -127,13 +122,13 @@ public class PlaceViewModel extends BaseObservable {
                             mDataListener.onEmpty();
                         }
                         mDataListener.onCompleted(mPlaces);
-                        setLoading(false);
+                        mIsLoading = false;
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         mDataListener.onError(e);
-                        setLoading(false);
+                        mIsLoading = false;
                     }
 
                     @Override

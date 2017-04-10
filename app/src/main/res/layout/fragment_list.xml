@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -9,36 +8,25 @@
         <variable
             name="placeViewModel"
             type="br.com.henriquecocito.lunchtime.viewmodel.PlaceViewModel"/>
-
-
     </data>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/refresh"
+        <ProgressBar
+            android:id="@id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="@{placeViewModel.loading ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            <ProgressBar
-                android:id="@id/loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="@{placeViewModel.loading ? View.VISIBLE : View.GONE}"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="@{placeViewModel.loading ? View.GONE : View.VISIBLE}"/>
-            </LinearLayout>
-
-        </android.support.v4.widget.SwipeRefreshLayout>
-
+            android:layout_height="match_parent"
+            android:visibility="@{placeViewModel.loading ? View.GONE : View.VISIBLE}"/>
+    </RelativeLayout>
 
 </layout>

@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ActivityMainBinding mView;
     ContentMainBinding mContentBinding;
     ArrayList<BaseFragment> mFragments;
+    MapFragment mMapFragment = new MapFragment();
+    ListFragment mListFragment = new ListFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupNavigationDrawer(mView.drawerLayout, toolbar);
 
         mFragments = new ArrayList<>();
-        mFragments.add(new ListFragment());
-        mFragments.add(new MapFragment());
+        mFragments.add(mListFragment);
+//        mFragments.add(mMapFragment);
 
         mContentBinding = DataBindingUtil.bind(mView.drawerLayout.findViewById(R.id.rootView));
         setupPager(mContentBinding.pager, mContentBinding.tabbar);
@@ -60,8 +62,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onRestart() {
         super.onRestart();
 
-        MapFragment mapFragment = (MapFragment) mFragments.get(1);
-        mapFragment.setupGoogleMaps();
+        switch (mContentBinding.tabbar.getSelectedTabPosition()) {
+            case 0:
+                mListFragment.onRefresh();
+                break;
+            case 1:
+//                mMapFragment.setupGoogleMaps();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

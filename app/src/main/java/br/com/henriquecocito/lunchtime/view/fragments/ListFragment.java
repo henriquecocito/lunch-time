@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -63,20 +64,10 @@ public class ListFragment extends Fragment implements BaseFragment, SwipeRefresh
         mView.list.setAdapter(mainAdapter);
         mView.list.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mView.refresh.setOnRefreshListener(this);
+//        mView.refresh.setOnRefreshListener(this);
+        onRefresh();
 
         return mView.list;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        this.onRefresh();
     }
 
     @Override
@@ -103,7 +94,7 @@ public class ListFragment extends Fragment implements BaseFragment, SwipeRefresh
     }
 
     @Override
-    public void onError(Throwable error) {
+    public void onError(final Throwable error) {
         Snackbar.make(mView.getRoot(), error.getLocalizedMessage(), Snackbar.LENGTH_LONG).setAction(getString(R.string.btn_try_again), new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -67,7 +67,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
 
     @Override
     public void onMapError(Throwable error) {
-        Snackbar.make(getView(), error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
+//        Snackbar.make(getView(), error.getLocalizedMessage(), Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -107,11 +107,11 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(
-                            getActivity(),
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                            LunchTimeApplication.REQUEST_PERMISSIONS
-                    );
+//                    ActivityCompat.requestPermissions(
+//                            getActivity(),
+//                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+//                            LunchTimeApplication.REQUEST_PERMISSIONS
+//                    );
                     return;
                 }
                 mGoogleMap.setMyLocationEnabled(true);

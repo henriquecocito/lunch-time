@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <import type="android.view.View"/>
@@ -39,14 +39,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:visibility="@{loginViewModel.loading ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{loginViewModel.loading ? View.VISIBLE : View.GONE}"
+                tools:visibility="gone"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:orientation="vertical"
-                android:visibility="@{loginViewModel.loading || !loginViewModel.email ? View.GONE : View.VISIBLE}">
+                android:visibility="@{loginViewModel.loading || !loginViewModel.email ? View.GONE : View.VISIBLE}"
+                tools:visibility="gone">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
@@ -97,7 +99,8 @@
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:text="@string/btn_sign_up"
-                    android:visibility="@{loginViewModel.email ? View.VISIBLE : View.GONE}" />
+                    android:visibility="@{loginViewModel.email ? View.VISIBLE : View.GONE}"
+                    tools:visibility="gone"/>
 
                 <Button
                     android:layout_width="@dimen/button_width"
