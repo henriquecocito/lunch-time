@@ -53,7 +53,7 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
         mMapViewModel = new MapViewModel();
         mMapViewModel.setDataListener(this);
 
-        mLocation = getLastKnownLocation();
+//        mLocation = getLastKnownLocation();
 
 //        setupGoogleMaps();
     }
@@ -153,35 +153,5 @@ public class MapFragment extends SupportMapFragment implements BaseFragment, Map
         marker.setTag(map.getId());
     }
 
-    @Nullable
-    private Location getLastKnownLocation() {
 
-        // Check permissions
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-         && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(
-                    getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    LunchTimeApplication.REQUEST_PERMISSIONS
-            );
-            return null;
-        }
-
-        // Get list of location providers
-        LocationManager locationManager = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        Location bestLocation = null;
-
-        // Get the best location provided
-        for (String provider : locationManager.getProviders(true)) {
-            Location location = locationManager.getLastKnownLocation(provider);
-            if (location == null) {
-                continue;
-            }
-            if (bestLocation == null || location.getAccuracy() < bestLocation.getAccuracy()) {
-                bestLocation = location;
-            }
-        }
-        return bestLocation;
-    }
 }

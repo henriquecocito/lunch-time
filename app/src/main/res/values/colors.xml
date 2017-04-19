@@ -10,4 +10,5 @@
     <color name="icons">#212121</color>
     <color name="divider">#BDBDBD</color>
     <color name="background">#f3f3f3</color>
+    <color name="background_error">#e1e1e1</color>
 </resources>

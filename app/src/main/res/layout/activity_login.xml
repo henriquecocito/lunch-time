@@ -89,7 +89,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:layout_width="@dimen/button_width"
+                    android:layout_width="@dimen/btn_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
@@ -103,7 +103,7 @@
                     tools:visibility="gone"/>
 
                 <Button
-                    android:layout_width="@dimen/button_width"
+                    android:layout_width="@dimen/btn_width"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
@@ -118,7 +118,7 @@
             </LinearLayout>
 
             <Button
-                android:layout_width="@dimen/button_width"
+                android:layout_width="@dimen/btn_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
@@ -131,7 +131,7 @@
                 android:visibility="@{loginViewModel.loading || loginViewModel.email ? View.GONE : View.VISIBLE}" />
 
             <Button
-                android:layout_width="@dimen/button_width"
+                android:layout_width="@dimen/btn_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"

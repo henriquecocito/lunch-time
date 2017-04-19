@@ -2,6 +2,8 @@ package br.com.henriquecocito.lunchtime.utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.BindingAdapter;
 import android.graphics.Typeface;
@@ -18,14 +20,14 @@ import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by hrcocito on 03/04/17.
  */
 
 public class Utils {
+
+    public static final String PREF_KEY = LunchTimeApplication.CONTEXT.getString(R.string.app_name);
 
     @BindingAdapter("app:fontFamily")
     public static void setFont(TextView textView, String fontFamily) {
@@ -45,31 +47,59 @@ public class Utils {
         }
     }
 
+    public static SharedPreferences getPreference() {
+        return LunchTimeApplication.CONTEXT.getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
+    }
+
+    public static void setPreference(String key, Object value) {
+        SharedPreferences preferences = LunchTimeApplication.CONTEXT.getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        if(value.getClass().equals(Integer.class)) {
+            editor.putInt(key, (Integer) value);
+        } else if(value.getClass().equals(String.class)) {
+            editor.putString(key, (String) value);
+        } else if(value.getClass().equals(Float.class)) {
+            editor.putFloat(key, (Float) value);
+        }
+
+        editor.commit();
+    }
+
     public static Observable<Location> getLocation(final Activity activity) {
 
         return Observable.create(new Observable.OnSubscribe<Location>() {
+
             @Override
             public void call(final Subscriber<? super Location> subscriber) {
-
-                LocationManager mLocationManager = (LocationManager) LunchTimeApplication.CONTEXT.getSystemService(LunchTimeApplication.CONTEXT.LOCATION_SERVICE);
+                final LocationManager mLocationManager = (LocationManager) activity.getSystemService(activity.LOCATION_SERVICE);
 
                 if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                  && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                    int i = 0;
-//                    subscriber.onError(new Throwable(LunchTimeApplication.CONTEXT.getString(R.string.error_permission_location)));
+                    subscriber.onError(new Throwable(activity.getString(R.string.error_permission_location)));
                     return;
                 }
 
-//                subscriber.onNext(mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), false)));
+                Location bestLocation = null;
 
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 10, new android.location.LocationListener() {
+                for (String provider : mLocationManager.getProviders(true)) {
+                    Location location = mLocationManager.getLastKnownLocation(provider);
+                    if (location == null) {
+                        continue;
+                    }
+                    if (bestLocation == null || location.getAccuracy() < bestLocation.getAccuracy()) {
+                        bestLocation = location;
+                    }
+                }
+
+                subscriber.onNext(bestLocation);
+
+                LocationListener locationListener = new LocationListener() {
 
                     @Override
                     public void onLocationChanged(Location location) {
-                        int i = 0;
-//                        subscriber.onNext(location);
-//                        subscriber.onCompleted();
+                        subscriber.onNext(location);
+                        subscriber.onCompleted();
                     }
 
                     @Override
@@ -79,15 +109,29 @@ public class Utils {
 
                     @Override
                     public void onProviderEnabled(String s) {
-                        int i = 0;
+                        subscriber.onError(null);
                     }
 
                     @Override
                     public void onProviderDisabled(String s) {
-                        int i = 0;
-//                        subscriber.onError(new Throwable(s));
+                        String error;
+                        switch (s) {
+                            case LocationManager.GPS_PROVIDER:
+                                error = activity.getString(R.string.error_gps_disabled);
+                                break;
+                            case LocationManager.NETWORK_PROVIDER:
+                                error = activity.getString(R.string.error_network_disabled);
+                                break;
+                            default:
+                                error = activity.getString(R.string.error_permission_location);
+                                break;
+                        }
+                        subscriber.onError(new Throwable(error));
                     }
-                });
+                };
+
+                mLocationManager.removeUpdates(locationListener);
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 10, locationListener);
             }
         });
     }

@@ -1,22 +1,33 @@
 package br.com.henriquecocito.lunchtime.view.fragments;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +57,7 @@ public class ListFragment extends Fragment implements BaseFragment, SwipeRefresh
     private Location mLocation = new Location(LocationManager.GPS_PROVIDER);
     private List<Place> mPlaces = new ArrayList<>();
     private PlaceViewModel mPlaceViewModel;
+    private AlertDialog.Builder mAlertDialog;
 
     @Override
     public String getFragmentTitle() {
@@ -64,10 +76,56 @@ public class ListFragment extends Fragment implements BaseFragment, SwipeRefresh
         mView.list.setAdapter(mainAdapter);
         mView.list.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-//        mView.refresh.setOnRefreshListener(this);
+        mView.refresh.setOnRefreshListener(this);
         onRefresh();
 
-        return mView.list;
+        setHasOptionsMenu(true);
+
+        return mView.getRoot();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_restaurants, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_filter:
+                SharedPreferences preferences = getActivity().getSharedPreferences(Utils.PREF_KEY, Context.MODE_PRIVATE);
+                CharSequence items[] = new CharSequence[] {"Name", "Distance", "Rating"};
+
+                mAlertDialog = new AlertDialog.Builder(getActivity());
+                mAlertDialog.setTitle("Sort by");
+                mAlertDialog.setSingleChoiceItems(items, preferences.getInt(PlaceViewModel.PLACE_PREFERENCE_SORT, 0), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface d, int n) {
+                        switch(n) {
+                            case 0:
+                                mPlaceViewModel.sortBy(PlaceViewModel.PLACE_SORT_NAME);
+                                break;
+                            case 1:
+                                mPlaceViewModel.sortBy(PlaceViewModel.PLACE_SORT_DISTANCE);
+                                break;
+                            case 2:
+                                mPlaceViewModel.sortBy(PlaceViewModel.PLACE_SORT_RATING);
+                                break;
+                            default:
+                                break;
+                        }
+                        mAlertDialog = null;
+                        d.dismiss();
+                    }
+
+                });
+                mAlertDialog.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -77,7 +135,7 @@ public class ListFragment extends Fragment implements BaseFragment, SwipeRefresh
 
     @Override
     public void onEmpty() {
-
+        mView.refresh.setRefreshing(false);
     }
 
     @Override
@@ -91,15 +149,32 @@ public class ListFragment extends Fragment implements BaseFragment, SwipeRefresh
         mPlaces.clear();
         mPlaces.addAll(places);
         mainAdapter.notifyDataSetChanged();
+
+        mView.refresh.setRefreshing(false);
     }
 
     @Override
-    public void onError(final Throwable error) {
-        Snackbar.make(mView.getRoot(), error.getLocalizedMessage(), Snackbar.LENGTH_LONG).setAction(getString(R.string.btn_try_again), new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ListFragment.this.onRefresh();
-            }
-        });
+    public void onError(Throwable error) {
+
+        mView.refresh.setRefreshing(false);
+
+        if(error.getMessage() == getString(R.string.error_permission_location)) {
+
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    LunchTimeApplication.REQUEST_PERMISSIONS
+            );
+        } else{
+            Snackbar
+                    .make(getActivity().findViewById(R.id.rootView), error.getLocalizedMessage(), Snackbar.LENGTH_INDEFINITE)
+                    .setAction(getString(R.string.btn_try_again), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ListFragment.this.onRefresh();
+                        }
+                    })
+                    .show();
+        }
     }
 }

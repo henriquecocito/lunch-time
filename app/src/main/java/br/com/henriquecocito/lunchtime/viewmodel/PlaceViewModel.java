@@ -17,9 +17,13 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import br.com.henriquecocito.lunchtime.BR;
 import br.com.henriquecocito.lunchtime.LunchTimeApplication;
 import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.model.Place;
@@ -29,6 +33,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -37,10 +42,17 @@ import rx.schedulers.Schedulers;
 
 public class PlaceViewModel extends BaseObservable {
 
+    public static final int PLACE_SORT_NAME = 0;
+    public static final int PLACE_SORT_DISTANCE = 1;
+    public static final int PLACE_SORT_RATING = 2;
+    public static final String PLACE_PREFERENCE_SORT = "preference_sort";
+
     private Activity mActivity;
     private PlaceDataListener mDataListener;
     private ArrayList<Place> mPlaces = new ArrayList<>();
     private boolean mIsLoading = false;
+    private boolean mIsError = false;
+    private Location mLocation;
 
     public PlaceViewModel(Activity activity, PlaceDataListener dataListener) {
         this.mActivity = activity;
@@ -59,36 +71,64 @@ public class PlaceViewModel extends BaseObservable {
         return mIsLoading;
     }
 
-    public void getPlaces() {
+    @Bindable
+    public boolean isError() {
+        return mIsError;
+    }
+
+    private void showError() {
+        mIsLoading = false;
+        mIsError = true;
+        notifyPropertyChanged(BR.loading);
+        notifyPropertyChanged(BR.error);
+    }
+
+    private void showLoading() {
         mIsLoading = true;
-//        Utils
-//                .getLocation(mActivity)
-//                .subscribe(new Subscriber<Location>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        mIsLoading = false;
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        ActivityCompat.requestPermissions(
-//                                mActivity,
-//                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-//                                LunchTimeApplication.REQUEST_PERMISSIONS
-//                        );
-//                    }
-//
-//                    @Override
-//                    public void onNext(Location location) {
-////                        mDataListener.onLocalized(location);
-//                        getNearByPlaces(location);
-//                    }
-//                });
+        mIsError = false;
+        notifyPropertyChanged(BR.loading);
+        notifyPropertyChanged(BR.error);
+    }
+
+    private void showList() {
+        mIsLoading = false;
+        mIsError = false;
+        notifyPropertyChanged(BR.loading);
+        notifyPropertyChanged(BR.error);
+    }
+
+    public void getPlaces() {
+
+        showLoading();
+
+        Utils
+                .getLocation(mActivity)
+                .subscribe(new Subscriber<Location>() {
+                    @Override
+                    public void onCompleted() {
+                        showList();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showError();
+                        mDataListener.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(Location location) {
+                        if(location != null) {
+                            mLocation = location;
+                            mDataListener.onLocalized(location);
+                            getNearByPlaces(location);
+                        }
+                    }
+                });
     }
 
     public void getNearByPlaces(Location location) {
 
-        mIsLoading = true;
+        showLoading();
 
         // Get application context
         Context context = LunchTimeApplication.CONTEXT;
@@ -115,6 +155,7 @@ public class PlaceViewModel extends BaseObservable {
                         return Observable.just((List<Place>) gson.fromJson(jsonArray, listType));
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Place>>() {
                     @Override
                     public void onCompleted() {
@@ -122,19 +163,49 @@ public class PlaceViewModel extends BaseObservable {
                             mDataListener.onEmpty();
                         }
                         mDataListener.onCompleted(mPlaces);
-                        mIsLoading = false;
+                        showList();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         mDataListener.onError(e);
-                        mIsLoading = false;
+                        showError();
                     }
 
                     @Override
                     public void onNext(List<Place> places) {
-                        mPlaces.addAll(places);
+                        if(places.size() > 0) {
+                            mPlaces.clear();
+                            mPlaces.addAll(places);
+
+                            sortBy(Utils.getPreference().getInt(PLACE_PREFERENCE_SORT, 0));
+                        }
                     }
                 });
+    }
+
+    public void sortBy(final int item) {
+
+        Utils.setPreference(PLACE_PREFERENCE_SORT, item);
+
+        Collections.sort(mPlaces, new Comparator<Place>() {
+            @Override
+            public int compare(Place place, Place place2) {
+                switch (item) {
+                    case PLACE_SORT_NAME:
+                        return place.getName().compareTo(place2.getName());
+                    case PLACE_SORT_DISTANCE:
+                        if(mLocation != null) {
+                            return Float.compare(mLocation.distanceTo(place.getGeometry()), mLocation.distanceTo(place2.getGeometry()));
+                        }
+                        return 0;
+                    case PLACE_SORT_RATING:
+                        return Double.compare(place2.getRating(), place.getRating());
+                    default:
+                        return 0;
+                }
+            }
+        });
+        mDataListener.onCompleted(mPlaces);
     }
 }

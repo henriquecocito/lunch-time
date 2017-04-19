@@ -10,23 +10,51 @@
             type="br.com.henriquecocito.lunchtime.viewmodel.PlaceViewModel"/>
     </data>
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@id/loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="@{placeViewModel.loading ? View.VISIBLE : View.GONE}"
-            tools:visibility="gone"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{placeViewModel.loading ? View.GONE : View.VISIBLE}"/>
-    </RelativeLayout>
+            android:visibility="@{placeViewModel.error ? View.VISIBLE : View.GONE}"
+            tools:visibility="gone">
 
+            <include
+                layout="@layout/content_error_gps"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{placeViewModel.error ? View.GONE : View.VISIBLE}"
+            tools:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                android:visibility="@{placeViewModel.loading ? View.VISIBLE : View.GONE}"
+                tools:visibility="gone" />
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/refresh">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="@{placeViewModel.loading ? View.GONE : View.VISIBLE}"/>
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
 </layout>

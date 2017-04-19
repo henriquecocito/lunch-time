@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mFragments = new ArrayList<>();
         mFragments.add(mListFragment);
-//        mFragments.add(mMapFragment);
+        mFragments.add(mMapFragment);
 
         mContentBinding = DataBindingUtil.bind(mView.drawerLayout.findViewById(R.id.rootView));
         setupPager(mContentBinding.pager, mContentBinding.tabbar);
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(grantResults.length < 1 || grantResults[0] < 0 || grantResults[1] < 0) {
                     Snackbar
                             .make(mView.getRoot(), R.string.error_permission_location, Snackbar.LENGTH_INDEFINITE)
-                            .setAction("Add permissions", new View.OnClickListener() {
+                            .setAction(R.string.btn_permission, new View.OnClickListener() {
 
                                 @Override
                                 public void onClick(View v) {
@@ -128,9 +128,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
                             })
                             .show();
+                    return;
                 }
+                onRestart();
                 break;
             default:
+
                 break;
         }
     }
