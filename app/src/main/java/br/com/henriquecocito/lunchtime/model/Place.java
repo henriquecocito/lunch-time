@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,11 +26,11 @@ public class Place {
 
     @Expose
     @SerializedName("geometry")
-    private Map<String, Map<String, Object>> mGeometry;
+    private Map<String, Map<String, Object>> mGeometry = new HashMap<>();
 
     @Expose
     @SerializedName("photos")
-    private ArrayList<JSONObject> mPhotos;
+    private ArrayList<Map<String, Object>> mPhotos = new ArrayList<>();
 
     @Expose
     @SerializedName("rating")
@@ -70,11 +71,11 @@ public class Place {
         this.mGeometry = geometry;
     }
 
-    public ArrayList<JSONObject> getPhotos() {
+    public ArrayList<Map<String, Object>> getPhotos() {
         return mPhotos;
     }
 
-    public void setPhotos(ArrayList<JSONObject> photos) {
+    public void setPhotos(ArrayList<Map<String, Object>> photos) {
         this.mPhotos = photos;
     }
 

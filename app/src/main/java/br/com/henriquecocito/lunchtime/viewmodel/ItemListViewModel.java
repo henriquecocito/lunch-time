@@ -1,33 +1,13 @@
 package br.com.henriquecocito.lunchtime.viewmodel;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.databinding.BindingAdapter;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
-import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.widget.ImageView;
-
-import com.google.gson.internal.LinkedHashTreeMap;
-import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Map;
+import android.net.Uri;
 
 import br.com.henriquecocito.lunchtime.LunchTimeApplication;
+import br.com.henriquecocito.lunchtime.R;
 import br.com.henriquecocito.lunchtime.model.Place;
-import br.com.henriquecocito.lunchtime.utils.Utils;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * Created by hrcocito on 29/03/17.
@@ -58,7 +38,21 @@ public class ItemListViewModel extends BaseObservable {
         return mPlace.getVicinity();
     }
 
+    @Bindable
     public String getPicture() {
+        if(mPlace.getPhotos().size() > 0) {
+            return new Uri.Builder()
+                    .scheme("https")
+                    .authority("maps.googleapis.com")
+                    .appendPath("maps")
+                    .appendPath("api")
+                    .appendPath("place")
+                    .appendPath("photo")
+                    .appendQueryParameter("key", LunchTimeApplication.CONTEXT.getString(R.string.googleApiKey))
+                    .appendQueryParameter("photoreference", (String) mPlace.getPhotos().get(0).get("photo_reference"))
+                    .appendQueryParameter("maxwidth", "1080")
+                    .toString();
+        }
         return "";
     }
 

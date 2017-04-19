@@ -45,7 +45,6 @@ public class PlaceViewModel extends BaseObservable {
     public static final int PLACE_SORT_NAME = 0;
     public static final int PLACE_SORT_DISTANCE = 1;
     public static final int PLACE_SORT_RATING = 2;
-    public static final String PLACE_PREFERENCE_SORT = "preference_sort";
 
     private Activity mActivity;
     private PlaceDataListener mDataListener;
@@ -130,32 +129,8 @@ public class PlaceViewModel extends BaseObservable {
 
         showLoading();
 
-        // Get application context
-        Context context = LunchTimeApplication.CONTEXT;
-
-        // Get shared preferences
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("key", context.getString(R.string.googleApiKey));
-        params.put("sensor", "true");
-        params.put("radius", sharedPreferences.getString(context.getString(R.string.pref_key_radius), context.getString(R.string.pref_default_radius)));
-        params.put("types", "restaurant");
-        params.put("location", String.format("%s,%s", location.getLatitude(), location.getLongitude()));
-
-        APIClient
-                .getInstance()
-                .getPlaces(params)
-                .flatMap(new Func1<LinkedTreeMap<String, Object>, Observable<List<Place>>>() {
-                    @Override
-                    public Observable<List<Place>> call(LinkedTreeMap<String, Object> object) {
-                        Gson gson = new Gson();
-                        JsonArray jsonArray = gson.toJsonTree(object.get("results")).getAsJsonArray();
-                        Type listType = new TypeToken<List<Place>>() {}.getType();
-                        return Observable.just((List<Place>) gson.fromJson(jsonArray, listType));
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
+        Utils
+                .getNearByPlaces(location)
                 .subscribe(new Subscriber<List<Place>>() {
                     @Override
                     public void onCompleted() {
@@ -178,7 +153,7 @@ public class PlaceViewModel extends BaseObservable {
                             mPlaces.clear();
                             mPlaces.addAll(places);
 
-                            sortBy(Utils.getPreference().getInt(PLACE_PREFERENCE_SORT, 0));
+                            sortBy(Utils.getPreference().getInt(Utils.PREF_SORT_KEY, 0));
                         }
                     }
                 });
@@ -186,7 +161,7 @@ public class PlaceViewModel extends BaseObservable {
 
     public void sortBy(final int item) {
 
-        Utils.setPreference(PLACE_PREFERENCE_SORT, item);
+        Utils.setPreference(Utils.PREF_SORT_KEY, item);
 
         Collections.sort(mPlaces, new Comparator<Place>() {
             @Override

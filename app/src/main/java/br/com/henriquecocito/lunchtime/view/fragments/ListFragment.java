@@ -99,7 +99,7 @@ public class ListFragment extends Fragment implements BaseFragment, SwipeRefresh
 
                 mAlertDialog = new AlertDialog.Builder(getActivity());
                 mAlertDialog.setTitle("Sort by");
-                mAlertDialog.setSingleChoiceItems(items, preferences.getInt(PlaceViewModel.PLACE_PREFERENCE_SORT, 0), new DialogInterface.OnClickListener() {
+                mAlertDialog.setSingleChoiceItems(items, preferences.getInt(Utils.PREF_SORT_KEY, 0), new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface d, int n) {

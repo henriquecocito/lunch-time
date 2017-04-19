@@ -26,10 +26,10 @@
                 android:layout_height="@dimen/card_image_size"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:padding="@dimen/card_image_padding"
                 android:background="@color/background"
                 android:contentDescription="Restaurant"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
+                android:transitionName="picture"
                 app:url="@{itemListViewModel.picture}"
                 app:placeholder="@{@drawable/bg_placeholder}"/>
 
@@ -46,6 +46,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:contentDescription="Name"
+                android:transitionName="placeName"
                 app:fontFamily="@{@string/font_primary}"
                 tools:text="Name"/>
 
@@ -57,6 +58,7 @@
                 android:layout_margin="@dimen/card_margin"
                 android:layout_below="@+id/placeName"
                 android:layout_toEndOf="@+id/picture"
+                android:transitionName="rating"
                 android:rating="@{itemListViewModel.rating}"/>
 
             <LinearLayout
@@ -79,6 +81,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:contentDescription="Vicinity"
+                    android:transitionName="vicinity"
                     app:fontFamily="@{@string/font_secondary}"
                     tools:text="Vicinity"/>
 
@@ -94,6 +97,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:contentDescription="Distance"
+                    android:transitionName="distance"
                     app:fontFamily="@{@string/font_secondary}"
                     tools:text="0.0 km"/>
             </LinearLayout>
